@@ -3,6 +3,9 @@
 	"version":"0.0.1",
 	"description":"Contrata.me is a web service that helps you to blalblabla",
 	"main":"app.js",
+	"scripts":{
+		"start":"node app.js"
+	},
 	"author":"Este Nene",
 	"dependencies":{
 		"body-parser":"^1.18.1",

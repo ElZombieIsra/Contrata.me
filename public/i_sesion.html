@@ -70,9 +70,11 @@
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$('#send').on('click', function(){
+				var mailV= htmlEntities($('input[name=mail]').val());
+				var passV= htmlEntities($('input[name=pass]').val());
 				var formData = {
-					'mail':$('input[name=mail]').val(),
-					'pass':$('input[name=pass]').val()
+					'mail':mailV,
+					'pass':passV
 				};
 				$.ajax({
 					url:'/consultarUsuario',
@@ -84,6 +86,11 @@
 						setTimeout(function(){
 							$('#snackbar').removeClass("show");
 						},3000);
+						if (data==='Sí existe el usuario') {
+							setTimeout(function(){
+								window.location.replace('/Trabajador/indexUsuario.html');
+							},3000);
+						}
 					},
 					error:function(jqXHR,textStatus,err){
 						$('#snackbar').addClass("show").html("<strong>"+jqXHR+"</strong>");
@@ -94,6 +101,11 @@
 				});
 			});
 		});
+	</script>
+	<script type="text/javascript">
+		function htmlEntities(str) {
+ 		   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+		}
 	</script>
 </body>
 </html>

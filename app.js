@@ -1,5 +1,8 @@
+'use strict';
+
 const express=require('express');
 const mysql=require('mysql');
+var session = require('client-sessions')
 
 var con=mysql.createConnection({
 	host:'localhost',
@@ -15,6 +18,14 @@ app.use(bodyParser.urlencoded({
 	extended:true
 }));
 app.use(express.static('public'));
+app.use(session({
+  cookieName: 'session',
+  secret: 'awadeuwu',
+  duration: 30 * 60 * 1000,
+  activeDuration: 5 * 60 * 1000,
+  mail:'',
+  pass:'',
+}));
 app.listen(8080,()=>{
 	console.log('servidor iniciado en el puerto 8080');
 });
@@ -46,6 +57,8 @@ app.post('/consultarUsuario',(req,res)=>{
 				return;
 			}
 			if (mail===json[0].mail&&pass===json[0].pass) {
+				req.session.mail=mail;
+				req.session.pass=pass;
 				return res.send('Sí existe el usuario');
 			}else{
 				return;

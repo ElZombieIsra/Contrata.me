@@ -1,16 +1,30 @@
 {
-	"name":"Contrata.me",
-	"version":"0.0.1",
-	"description":"Contrata.me is a web service that helps you to blalblabla",
-	"main":"app.js",
-	"scripts":{
-		"start":"node app.js"
-	},
-	"author":"Este Nene",
-	"dependencies":{
-		"body-parser":"^1.18.1",
-		"client-sessions":"^0.8.0",
-		"express":"^4.15.4",
-		"mysql":"^2.14.1"
-	}
+  "name": "contrata.me",
+  "version": "0.0.1",
+  "description": "Contrata.me is a web service that helps you to blalblabla",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Este Nene",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "1.18.1",
+    "client-sessions": "0.8.0",
+    "express": "4.15.4",
+    "html2pug": "^2.0.1",
+    "mysql": "2.14.1",
+    "pg": "6.x",
+    "pug": "^2.0.0-rc.4"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ElZombieIsra/Contrata.me.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ElZombieIsra/Contrata.me/issues"
+  },
+  "homepage": "https://github.com/ElZombieIsra/Contrata.me#readme"
 }

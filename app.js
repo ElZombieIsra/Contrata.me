@@ -2,16 +2,39 @@
 
 const express=require('express');
 const mysql=require('mysql');
-var session = require('client-sessions')
+const bcrypt=require('bcrypt-nodejs')
+var session = require('client-sessions');
+const {Pool, Client} = require('pg');
 
+const pool = new Pool({
+	user: 'postgres',
+	host: 'localhost',
+	database: 'node',
+	password: 'n0m3l0',
+	port: 5432,
+});
+
+const client = new Client({
+	user: 'postgres',
+	host: 'localhost',
+	database: 'node',
+	password: 'n0m3l0',
+	port: 5432,
+});
+
+client.connect();
+/*
 var con=mysql.createConnection({
 	host:'localhost',
 	user:'root',
 	password:'n0m3l0',
 	database:'node'
 });
+
 con.connect();
+*/
 var app=express();
+app.set('view engine','pug');
 var bodyParser=require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -25,6 +48,9 @@ app.use(session({
   activeDuration: 5 * 60 * 1000,
   mail:'',
   pass:'',
+  httpOnly:true,
+  secure:false,
+  ephemeral:true
 }));
 app.listen(8080,()=>{
 	console.log('servidor iniciado en el puerto 8080');
@@ -32,9 +58,21 @@ app.listen(8080,()=>{
 app.post('/agregarUsuario',(req,res)=>{
 	let nombre=req.body.nombre;
 	let mail=req.body.mail;
+	let hashed = bcrypt.hashSync(req.body.pass);
 	let pass=req.body.pass;
 	let ap=req.body.apellidos;
+	/*
 	con.query('insert into usuario values(1,"'+mail+'","'+pass+'","'+nombre+'","'+ap+'")',(err,respuesta,fields)=>{
+		if (err) {
+			console.log('ERROR: ',err);
+			return;
+		}
+		return res.send('Usuario agregado');
+	});
+	*/
+	var text = 'INSERT INTO usuario(mail,pass,nombre,apellidos) VALUES($1,$2,$3,$4)';
+	var values = [mail,hashed,nombre,ap];
+	client.query(text,values,(err,respuesta)=>{
 		if (err) {
 			console.log('ERROR: ',err);
 			return;
@@ -45,6 +83,39 @@ app.post('/agregarUsuario',(req,res)=>{
 app.post('/consultarUsuario',(req,res)=>{
 	let mail=req.body.mail;
 	let pass=req.body.pass;
+	var q = 'SELECT mail, pass FROM usuario WHERE mail=$1';
+	var values =[mail];
+	client.query(q, values,(err,respuesta)=>{
+		if (err) {
+			console.log('Error: ',err);
+			return res.send('Error. Intente de nuevo más tarde');
+		}else{
+			var resp = JSON.stringify(respuesta.rows[0]);
+			if (resp === 'undefined') {
+				console.log('Error. No existe el usuario');
+				return res.send('No existe el usuario');
+			}else{
+				try{
+					var JSPAR = JSON.parse(resp);
+					var ok = bcrypt.compareSync(pass,JSPAR.pass);
+					console.log(ok);
+					if (mail===JSPAR.mail&&ok) {
+						req.session.mail=JSPAR.mail;
+						req.session.pass=JSPAR.pass;
+						return res.send('Sí existe el usuario');
+					}else{
+						console.log('a ber');
+						res.send('Usuario no encontrado');
+						return;
+					}
+				} catch(err){
+					console.log('Error: '+err);
+					res.send('Usuario no existente');
+				}
+			}
+		}
+	});
+	/*
 	con.query('SELECT mail, pass FROM usuario WHERE mail="'+mail+'" AND pass="'+pass+'"',(err,respuesta,fields)=>{
 		var resp = JSON.stringify(respuesta);
 		if (resp=='[]') {
@@ -65,4 +136,56 @@ app.post('/consultarUsuario',(req,res)=>{
 			}
 		}
 	});
+	*/
+});
+app.get('/Trabajador/*',(req,res)=>{
+	var mail = req.session.mail;
+	var pass = req.session.pass;
+	if (req.session&&mail) {
+		console.log('Pos si');
+		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';
+		var values =[mail,pass];
+		client.query(q, values,(err,respuesta)=>{
+			var isUser;
+			var resp = JSON.stringify(respuesta.rows[0]);
+			if (resp==='undefined') {
+				isUser = false;
+			}else{
+				try{
+					var JSPAR = JSON.parse(resp);
+					if (err) {
+						isUser=false;
+					}
+					if (mail===JSPAR.mail&&pass===JSPAR.pass) {
+						isUser=true;
+					}else{
+						isUser=false;
+					}
+				}catch(err){
+					console.log('Error: '+err);
+					isUser=false;
+				}
+			}
+			if (!isUser) {
+				res.send('No existe el usuario');
+				setTimeout(res.redirect('../registro.html'),3000);
+			}else{
+				console.log(req.url);
+				var path = req.url.replace('/Trabajador/','');
+				console.log(path);
+				if (path.indexOf('css')!=-1) {
+					res.send('vaia');
+				}else{
+					res.render(path);
+				}
+			}
+		});
+	}else{
+		console.log('Nel');
+		res.redirect('/i_sesion.html');
+	}
+});
+app.get('/logout', (req,res)=>{
+	req.session.reset();
+	res.redirect('../');
 });

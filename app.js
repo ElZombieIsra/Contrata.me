@@ -2,25 +2,26 @@
 
 const express=require('express');
 const mysql=require('mysql');
-const bcrypt=require('bcrypt-nodejs')
+const bcrypt=require('bcrypt-nodejs');
 var session = require('client-sessions');
-const {Pool, Client} = require('pg');
-
-const pool = new Pool({
-	user: 'postgres',
-	host: 'localhost',
-	database: 'node',
-	password: 'n0m3l0',
-	port: 5432,
-});
+const {Client} = require('pg');
 
 const client = new Client({
 	user: 'postgres',
 	host: 'localhost',
 	database: 'node',
 	password: 'n0m3l0',
+	port: 5433,
+});
+/*
+const client = new Client({
+	user: 'fpooidqomjvwsp',
+	host: 'ec2-107-22-167-179.compute-1.amazonaws.com',
+	database: 'devk8p9unf7fku',
+	password: '304f87e1b64f51b77777ef4bc76cfaaf2f033c9d9de50bfa30cd49cb9ffc0363',
 	port: 5432,
 });
+*/
 
 client.connect();
 /*
@@ -52,9 +53,11 @@ app.use(session({
   secure:false,
   ephemeral:true
 }));
+
 app.listen(8080,()=>{
 	console.log('servidor iniciado en el puerto 8080');
 });
+
 app.post('/agregarUsuario',(req,res)=>{
 	let nombre=req.body.nombre;
 	let mail=req.body.mail;
@@ -104,7 +107,6 @@ app.post('/consultarUsuario',(req,res)=>{
 						req.session.pass=JSPAR.pass;
 						return res.send('Sí existe el usuario');
 					}else{
-						console.log('a ber');
 						res.send('Usuario no encontrado');
 						return;
 					}
@@ -142,7 +144,6 @@ app.get('/Trabajador/*',(req,res)=>{
 	var mail = req.session.mail;
 	var pass = req.session.pass;
 	if (req.session&&mail) {
-		console.log('Pos si');
 		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';
 		var values =[mail,pass];
 		client.query(q, values,(err,respuesta)=>{
@@ -170,22 +171,43 @@ app.get('/Trabajador/*',(req,res)=>{
 				res.send('No existe el usuario');
 				setTimeout(res.redirect('../registro.html'),3000);
 			}else{
-				console.log(req.url);
 				var path = req.url.replace('/Trabajador/','');
-				console.log(path);
 				if (path.indexOf('css')!=-1) {
 					res.send('vaia');
+				}else if (path.indexOf('png')!=-1) {
+					res.send('vaiax2');
+				}else if (path.indexOf('jpg')!=-1) {
+					res.send('vaiax3');
+				}else if (path.indexOf('js')!=-1) {
+					res.send('vaiax4');
 				}else{
 					res.render(path);
 				}
 			}
 		});
 	}else{
-		console.log('Nel');
 		res.redirect('/i_sesion.html');
 	}
 });
 app.get('/logout', (req,res)=>{
 	req.session.reset();
 	res.redirect('../');
+});
+app.post('/buscaDato',function (req,res) {
+		var values = ['%'+req.body.datos+'%'];
+		let q = "SELECT nombre FROM usuario WHERE nombre LIKE $1";
+		client.query(q,values,(err,respuesta)=>{
+			try{
+				var jn = {rs:[]};
+				let resul = respuesta.rows[0].nombre;
+				for (var i = respuesta.rowCount - 1; i >= 0; i--) {
+					jn.rs[i]=respuesta.rows[i].nombre;	
+				}
+				console.log(jn);
+				res.send(jn);
+			} catch(err){
+				console.log(err);
+				res.send ('Error');
+			}
+		});
 });

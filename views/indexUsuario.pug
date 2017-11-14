@@ -21,7 +21,10 @@ html
             a.nav-link.active(href='indexUsuario.html') Inicio
             span.sr-only (actual)
         form.form-inline
-          input.form-control.mr-sm-2(type='text', placeholder='Buscar', aria-label='Buscar', style='width: 30vw')
+          .dropdown.show
+            input#navSearch.form-control.mr-sm-2.dropdown-toggle(aria-expanded='false', aria-haspopup='true', role='searchbox', type='text', autocomplete='off', placeholder='Buscar', aria-label='Buscar', style='width: 30vw')
+            .dropdown-menu#resSearch(aria-labelledby='navSearch')
+              a.dropdown-item(href='#') 
           button.btn.btn-outline-primary.my-2.my-sm-0(type='submit') Buscar
         ul.navbar-nav.ml-auto
           li.navbar-item
@@ -83,6 +86,7 @@ html
               img.img-thumbnail.float-left.mr-2.mt-1(src='../img/mueble.png', style='width: 100%')
             .col
               p.text-justify.p-3 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
-    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
+    script(src='https://code.jquery.com/jquery-3.2.1.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js', integrity='sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4', crossorigin='anonymous')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js', integrity='sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1', crossorigin='anonymous')
+    script(src='../js/barraBusqueda.js')

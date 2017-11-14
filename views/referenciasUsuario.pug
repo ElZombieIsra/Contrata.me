@@ -4,15 +4,14 @@ html
     title Mis referencias
     meta(charset='utf-8')
     meta(name='viewport', content='height=device-height,initial-scale=1')
-    script(type='text/javascript', src='css/bootstrap.css')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css', integrity='sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M', crossorigin='anonymous')
-    link(rel='icon', href='img/logo.png')
+    link(rel='icon', href='../img/logo.png')
     link(href='https://fonts.googleapis.com/css?family=Montserrat', rel='stylesheet')
     link(rel='stylesheet', type='text/css', href='css/estilos.css')
   body
     nav.navbar.sticky-top.navbar-expand-md.navbar-light(style='background-color: #F6A623')
       a.navbar-brand(href='#')
-        img(src='img/logo.png', height='25', alt='')
+        img(src='../img/logo.png', height='25', alt='')
         |  Contrata.me
       button.navbar-toggler.navbar-toggler-right(type='button', data-toggle='collapse', data-target='#contrataNav', aria-controls='contrataNav', aria-expanded='false', aria-label='Toggle navigation')
         span.navbar-toggler-icon
@@ -21,7 +20,9 @@ html
           li.navbar-item
             a.nav-link.active(href='indexUsuario.html') Inicio
         form.form-inline
-          input.form-control.mr-sm-2(type='text', placeholder='Buscar', aria-label='Buscar', style='width: 30vw')
+          .dropdown.show
+            input#navSearch.form-control.mr-sm-2.dropdown-toggle(aria-expanded='false', aria-haspopup='true', role='searchbox', type='text', autocomplete='off', placeholder='Buscar', aria-label='Buscar', style='width: 30vw')
+            .dropdown-menu#resSearch(aria-labelledby='navSearch')
           button.btn.btn-outline-primary.my-2.my-sm-0(type='submit') Buscar
         ul.navbar-nav.ml-auto
           li.nav-item.dropdown
@@ -37,7 +38,7 @@ html
             a.nav-link(href='../logout') Salir
     .d-inline-block.p-5
       div
-        img.rounded(src='img/agua.jpg', style='width: 10vw')
+        img.rounded(src='../img/agua.jpg', style='width: 10vw')
         .invisible
           | Que tranza, jaja
           br
@@ -49,7 +50,7 @@ html
         #Ref
           .row.m-2
             .col-1
-              img.rounded(src='img/agua.jpg', style='height: 10vh')
+              img.rounded(src='../img/agua.jpg', style='height: 10vh')
             .col-6.text-justify.m-2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sollicitudin ligula et tempus scelerisque.
             .col
               .progress(style='margin: 2px 0px 0px 0px; height: 50%')
@@ -57,7 +58,7 @@ html
                 .progress-bar.bg-danger(role='progress-bar', style='width: 20%; height: 100%', aria-valuenow='20', aria-valuemin='0', aria-valuemax='100')
           .row.m-2
             .col-1
-              img.rounded(src='img/agua.jpg', style='height: 10vh')
+              img.rounded(src='../img/agua.jpg', style='height: 10vh')
             .col-6.text-justify.m-2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sollicitudin ligula et tempus scelerisque.
             .col
               .progress(style='margin: 2px 0px 0px 0px; height: 50%')
@@ -65,7 +66,7 @@ html
                 .progress-bar.bg-danger(role='progress-bar', style='width: 20%; height: 100%', aria-valuenow='20', aria-valuemin='0', aria-valuemax='100')
           .row.m-2
             .col-1
-              img.rounded(src='img/agua.jpg', style='height: 10vh')
+              img.rounded(src='../img/agua.jpg', style='height: 10vh')
             .col-6.text-justify.m-2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sollicitudin ligula et tempus scelerisque.
             .col
               .progress(style='margin: 2px 0px 0px 0px; height: 50%')
@@ -73,7 +74,7 @@ html
                 .progress-bar.bg-danger(role='progress-bar', style='width: 20%; height: 100%', aria-valuenow='20', aria-valuemin='0', aria-valuemax='100')
           .row.m-2
             .col-1
-              img.rounded(src='img/agua.jpg', style='height: 10vh')
+              img.rounded(src='../img/agua.jpg', style='height: 10vh')
             .col-6.text-justify.m-2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sollicitudin ligula et tempus scelerisque.
             .col
               .progress(style='margin: 2px 0px 0px 0px; height: 50%')
@@ -81,7 +82,7 @@ html
                 .progress-bar.bg-danger(role='progress-bar', style='width: 20%; height: 100%', aria-valuenow='20', aria-valuemin='0', aria-valuemax='100')
           .row.m-2
             .col-1
-              img.rounded(src='img/agua.jpg', style='height: 10vh')
+              img.rounded(src='../img/agua.jpg', style='height: 10vh')
             .col-6.text-justify.m-2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sollicitudin ligula et tempus scelerisque.
             .col
               .progress(style='margin: 2px 0px 0px 0px; height: 50%')
@@ -89,7 +90,7 @@ html
                 .progress-bar.bg-danger(role='progress-bar', style='width: 20%; height: 100%', aria-valuenow='20', aria-valuemin='0', aria-valuemax='100')
           .row.m-2
             .col-1
-              img.rounded(src='img/agua.jpg', style='height: 10vh')
+              img.rounded(src='../img/agua.jpg', style='height: 10vh')
             .col-6.text-justify.m-2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sollicitudin ligula et tempus scelerisque.
             .col
               .progress(style='margin: 2px 0px 0px 0px; height: 50%')
@@ -97,7 +98,7 @@ html
                 .progress-bar.bg-danger(role='progress-bar', style='width: 20%; height: 100%', aria-valuenow='20', aria-valuemin='0', aria-valuemax='100')
           .row.m-2
             .col-1
-              img.rounded(src='img/agua.jpg', style='height: 10vh')
+              img.rounded(src='../img/agua.jpg', style='height: 10vh')
             .col-6.text-justify.m-2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sollicitudin ligula et tempus scelerisque.
             .col
               .progress(style='margin: 2px 0px 0px 0px; height: 50%')
@@ -105,7 +106,7 @@ html
                 .progress-bar.bg-danger(role='progress-bar', style='width: 20%; height: 100%', aria-valuenow='20', aria-valuemin='0', aria-valuemax='100')
           .row.m-2
             .col-1
-              img.rounded(src='img/agua.jpg', style='height: 10vh')
+              img.rounded(src='../img/agua.jpg', style='height: 10vh')
             .col-6.text-justify.m-2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sollicitudin ligula et tempus scelerisque.
             .col
               .progress(style='margin: 2px 0px 0px 0px; height: 50%')
@@ -113,13 +114,14 @@ html
                 .progress-bar.bg-danger(role='progress-bar', style='width: 20%; height: 100%', aria-valuenow='20', aria-valuemin='0', aria-valuemax='100')
           .row.m-2
             .col-1
-              img.rounded(src='img/agua.jpg', style='height: 10vh')
+              img.rounded(src='../img/agua.jpg', style='height: 10vh')
             .col-6.text-justify.m-2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sollicitudin ligula et tempus scelerisque.
             .col
               .progress(style='margin: 2px 0px 0px 0px; height: 50%')
                 .progress-bar.bg-success(role='progress-bar', style='width: 80%; height: 100%', aria-valuenow='80', aria-valuemin='0', aria-valuemax='100')
                 .progress-bar.bg-danger(role='progress-bar', style='width: 20%; height: 100%', aria-valuenow='20', aria-valuemin='0', aria-valuemax='100')
       .invisible 7u7
-    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
+    script(src='https://code.jquery.com/jquery-3.2.1.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js', integrity='sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4', crossorigin='anonymous')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js', integrity='sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1', crossorigin='anonymous')
+    script(src='../js/barraBusqueda.js')

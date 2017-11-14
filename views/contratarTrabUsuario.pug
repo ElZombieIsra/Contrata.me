@@ -21,7 +21,10 @@ html
           li.navbar-item
             a.nav-link.active(href='indexUsuario.html') Inicio
         form.form-inline
-          input.form-control.mr-sm-2(type='text', placeholder='Buscar', aria-label='Buscar', style='width: 30vw')
+          .dropdown.show
+            input#navSearch.form-control.mr-sm-2.dropdown-toggle(aria-expanded='false', aria-haspopup='true', role='searchbox', type='text', autocomplete='off', placeholder='Buscar', aria-label='Buscar', style='width: 30vw')
+            .dropdown-menu#resSearch(aria-labelledby='navSearch')
+              a.dropdown-item(href='#') 
           button.btn.btn-outline-primary.my-2.my-sm-0(type='submit') Buscar
         ul.navbar-nav.ml-auto
           li.nav-item.dropdown
@@ -64,6 +67,7 @@ html
               | Etiam maximus, est quis auctor imperdiet, est ante ornare massa, ullamcorper consequat metus risus a ante. Mauris elit sem, semper quis hendrerit ac, hendrerit nec nulla. Nunc augue diam, maximus vel nisi lacinia, faucibus ornare mauris. Maecenas vel felis eu tellus pretium vehicula. Donec posuere vitae orci hendrerit dignissim. Fusce semper ex et malesuada viverra. Suspendisse potenti. Cras nec justo ut enim tempus dignissim eget ac sapien. Curabitur pellentesque efficitur nisl quis tempus. Suspendisse tristique nec nulla in auctor. Vestibulum a bibendum libero. Vivamus ac purus sit amet ante ornare bibendum eget sed orci. Phasellus tempus euismod ex sed suscipit. Proin vel sapien felis. Praesent quam leo, dictum vel urna id, efficitur consequat massa.
               br
             input.btn.btn-outline-dark(type='submit', name='pub-ready', value='Contratar')
-    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
+    script(src='https://code.jquery.com/jquery-3.2.1.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js', integrity='sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4', crossorigin='anonymous')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js', integrity='sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1', crossorigin='anonymous')
+    script(src='../js/barraBusqueda.js')

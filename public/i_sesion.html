@@ -69,6 +69,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
+			$
 			$('#send').on('click', function(){
 				var mailV= htmlEntities($('input[name=mail]').val());
 				var passV= htmlEntities($('input[name=pass]').val());
@@ -101,8 +102,6 @@
 				});
 			});
 		});
-	</script>
-	<script type="text/javascript">
 		function htmlEntities(str) {
  		   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 		}

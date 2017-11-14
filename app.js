@@ -56,9 +56,9 @@ app.use(session({
   secure:false,
   ephemeral:true
 }));
-
-app.listen(8080,()=>{
-	console.log('servidor iniciado en el puerto 8080');
+app.set('port', (process.env.PORT || 5000));
+app.listen(app.get('port'),()=>{
+	console.log('servidor iniciado en el puerto '+app.get('port'));
 });
 
 app.post('/agregarUsuario',(req,res)=>{

@@ -11,7 +11,7 @@ html
     link(rel='stylesheet', type='text/css', href='css/estilos.css')
   body.bg-light
     nav.navbar.sticky-top.navbar-expand-md.navbar-light(style='background-color: #F6A623')
-      a.navbar-brand(href='#')
+      a.navbar-brand(href='indexUsuario')
         img(src='../img/logo.png', height='25', alt='')
         |  Contrata.me
       button.navbar-toggler.navbar-toggler-right(type='button', data-toggle='collapse', data-target='#contrataNav', aria-controls='contrataNav', aria-expanded='false', aria-label='Toggle navigation')
@@ -19,7 +19,7 @@ html
       .collapse.navbar-collapse#contrataNav
         ul.navbar-nav
           li.navbar-item
-            a.nav-link.active(href='indexUsuario.html') Inicio
+            a.nav-link.active(href='indexUsuario') Inicio
         form.form-inline
           .dropdown.show
             input#navSearch.form-control.mr-sm-2.dropdown-toggle(aria-expanded='false', aria-haspopup='true', role='searchbox', type='text', autocomplete='off', placeholder='Buscar', aria-label='Buscar', style='width: 30vw')
@@ -33,7 +33,7 @@ html
               a.dropdown-item(href='#') Otra notificación
               a.dropdown-item(href='#') Tal vez otra
           li.navbar-item
-            a.nav-link.active(href='perfilUsuario.html') Perfil
+            a.nav-link.active(href='perfilUsuario') Perfil
             span.sr-only (actual)
           li.navbar-item
             a.nav-link(href='../logout') Salir

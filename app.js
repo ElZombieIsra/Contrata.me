@@ -5,7 +5,11 @@ const mysql=require('mysql');
 const bcrypt=require('bcrypt-nodejs');
 var session = require('client-sessions');
 const {Client} = require('pg');
-
+const client = new Client({
+	connectionString: process.env.DATABASE_URL,
+  	ssl: true,
+});
+/*
 const client = new Client({
 	user: 'postgres',
 	host: 'localhost',
@@ -13,7 +17,6 @@ const client = new Client({
 	password: 'n0m3l0',
 	port: 5433,
 });
-/*
 const client = new Client({
 	user: 'fpooidqomjvwsp',
 	host: 'ec2-107-22-167-179.compute-1.amazonaws.com',

@@ -219,35 +219,110 @@ app.get('/*',(req,res)=>{
 	}
 });
 app.post('/buscaDato',function (req,res) {
-		var values = ['%'+req.body.datos+'%'];
-		let q = "SELECT nombre FROM usuario WHERE nombre ILIKE $1";
-		client.query(q,values,(err,respuesta)=>{
+	var pass = req.session.pass;
+	if (req.session&&mail&&!busca) {
+		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';
+		var values =[mail,pass];
+		client.query(q, values,(err,respuesta)=>{
+			var isUser;
 			try{
-				var jn = {rs:[]};
-				let resul = respuesta.rows[0].nombre;
-				for (var i = respuesta.rowCount - 1; i >= 0; i--) {
-					jn.rs[i]=respuesta.rows[i].nombre;	
+				var resp = JSON.stringify(respuesta.rows[0]);
+			}catch(er){
+				console.log('Error: '+er);
+			}
+			if (resp.toString()==='undefined') {
+				isUser = false;
+			}else{
+				try{
+					var JSPAR = JSON.parse(resp);
+					if (err) {
+						isUser=false;
+					}
+					if (mail===JSPAR.mail&&pass===JSPAR.pass) {
+						isUser=true;
+					}else{
+						isUser=false;
+					}
+				}catch(err){
+					console.log('Error: '+err);
+					isUser=false;
 				}
-				res.send(jn);
-			} catch(err){
-				console.log(err);
-				res.send ('Error');
+			}
+			if (!isUser) {
+				res.send('No existe el usuario');
+				setTimeout(res.redirect('../i_sesion'),3000);
+			}else{
+				var values = ['%'+req.body.datos+'%'];
+				let q = "SELECT nombre FROM usuario WHERE nombre ILIKE $1";
+				client.query(q,values,(err,respuesta)=>{
+					try{
+						var jn = {rs:[]};
+						let resul = respuesta.rows[0].nombre;
+						for (var i = respuesta.rowCount - 1; i >= 0; i--) {
+							jn.rs[i]=respuesta.rows[i].nombre;	
+						}
+						res.send(jn);
+					} catch(err){
+						console.log(err);
+						res.send ('Error');
+					}
+				});
 			}
 		});
+	}else{
+		res.redirect('/i_sesion.html');
+	}
 });
 app.post('/busqueda',(req, res)=>{
-	console.log(req.path+' aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-	let busq = ['%'+req.body.bus+'%'];
-	let q = "SELECT * FROM usuario WHERE nombre ILIKE $1";
-	client.query(q,busq,(err,respuesta)=>{
-		try{
-			var jn = {rs:[]};
-			for (var i = respuesta.rowCount - 1; i >= 0; i--) {
-				jn.rs[i]=respuesta.rows[i].nombre +' '+respuesta.rows[i].apellidos;	
+	var pass = req.session.pass;
+	if (req.session&&mail&&!busca) {
+		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';
+		var values =[mail,pass];
+		client.query(q, values,(err,respuesta)=>{
+			var isUser;
+			try{
+				var resp = JSON.stringify(respuesta.rows[0]);
+			}catch(er){
+				console.log('Error: '+er);
 			}
-			res.render('busquedaTrabajadoresUsuario',jn);
-		}catch(error){
-			console.log('Error '+error);
-		}
-	});
+			if (resp.toString()==='undefined') {
+				isUser = false;
+			}else{
+				try{
+					var JSPAR = JSON.parse(resp);
+					if (err) {
+						isUser=false;
+					}
+					if (mail===JSPAR.mail&&pass===JSPAR.pass) {
+						isUser=true;
+					}else{
+						isUser=false;
+					}
+				}catch(err){
+					console.log('Error: '+err);
+					isUser=false;
+				}
+			}
+			if (!isUser) {
+				res.send('No existe el usuario');
+				setTimeout(res.redirect('../i_sesion'),3000);
+			}else{
+				let busq = ['%'+req.body.bus+'%'];
+				let q = "SELECT * FROM usuario WHERE nombre ILIKE $1";
+				client.query(q,busq,(err,respuesta)=>{
+					try{
+						var jn = {rs:[]};
+						for (var i = respuesta.rowCount - 1; i >= 0; i--) {
+							jn.rs[i]=respuesta.rows[i].nombre +' '+respuesta.rows[i].apellidos;	
+						}
+						res.render('busquedaTrabajadoresUsuario',jn);
+					}catch(error){
+						console.log('Error '+error);
+					}
+				});
+			}
+		});
+	}else{
+		res.redirect('/i_sesion.html');
+	}
 });

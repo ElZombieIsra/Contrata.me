@@ -5,18 +5,20 @@ const mysql=require('mysql');
 const bcrypt=require('bcrypt-nodejs');
 var session = require('client-sessions');
 const {Client} = require('pg');
+/*
 const client = new Client({
 	connectionString: process.env.DATABASE_URL,
   	ssl: true,
 });
-/*
+*/
 const client = new Client({
 	user: 'postgres',
 	host: 'localhost',
 	database: 'node',
 	password: 'n0m3l0',
-	port: 5433,
+	port: 5432,
 });
+/*
 const client = new Client({
 	user: 'fpooidqomjvwsp',
 	host: 'ec2-107-22-167-179.compute-1.amazonaws.com',
@@ -143,8 +145,10 @@ app.post('/consultarUsuario',(req,res)=>{
 	});
 	*/
 });
-app.get('/Trabajador/*',(req,res)=>{
+app.get('/*',(req,res)=>{
+	let busca = false;
 	var mail = req.session.mail;
+	if (req.url) {}
 	var pass = req.session.pass;
 	if (req.session&&mail) {
 		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';
@@ -174,7 +178,7 @@ app.get('/Trabajador/*',(req,res)=>{
 				res.send('No existe el usuario');
 				setTimeout(res.redirect('../registro.html'),3000);
 			}else{
-				var path = req.url.replace('/Trabajador/','');
+				var path = req.url;
 				if (path.indexOf('css')!=-1) {
 					res.send('vaia');
 				}else if (path.indexOf('png')!=-1) {
@@ -184,7 +188,8 @@ app.get('/Trabajador/*',(req,res)=>{
 				}else if (path.indexOf('js')!=-1) {
 					res.send('vaiax4');
 				}else{
-					res.render(path);
+					let route = path.replace('/','')
+					res.render(route);
 				}
 			}
 		});
@@ -206,11 +211,25 @@ app.post('/buscaDato',function (req,res) {
 				for (var i = respuesta.rowCount - 1; i >= 0; i--) {
 					jn.rs[i]=respuesta.rows[i].nombre;	
 				}
-				console.log(jn);
 				res.send(jn);
 			} catch(err){
 				console.log(err);
 				res.send ('Error');
 			}
 		});
+});
+app.post('/busqueda',(req, res)=>{
+	let busq = ['%'+req.body.bus+'%'];
+	let q = "SELECT * FROM usuario WHERE nombre LIKE $1";
+	client.query(q,busq,(err,respuesta)=>{
+		try{
+			var jn = {rs:[]};
+			for (var i = respuesta.rowCount - 1; i >= 0; i--) {
+				jn.rs[i]=respuesta.rows[i].nombre +' '+respuesta.rows[i].apellidos;	
+			}
+			res.render('busquedaTrabajadoresUsuario',jn);
+		}catch(error){
+			console.log('Error '+error);
+		}
+	});
 });

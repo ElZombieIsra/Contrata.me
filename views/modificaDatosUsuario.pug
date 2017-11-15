@@ -20,9 +20,9 @@ html
         ul.navbar-nav
           li.navbar-item
             a.nav-link.active(href='indexUsuario') Inicio
-        form.form-inline
+        form.form-inline(action='/busqueda', method='POST')
           .dropdown.show
-            input#navSearch.form-control.mr-sm-2.dropdown-toggle(aria-expanded='false', aria-haspopup='true', role='searchbox', type='text', autocomplete='off', placeholder='Buscar', aria-label='Buscar', style='width: 30vw')
+            input#navSearch.form-control.mr-sm-2.dropdown-toggle(aria-expanded='false', aria-haspopup='true', role='searchbox', type='text', autocomplete='off', placeholder='Buscar', aria-label='Buscar', style='width: 30vw', name='bus')
             .dropdown-menu#resSearch(aria-labelledby='navSearch')
               a.dropdown-item(href='#') 
           button.btn.btn-outline-primary.my-2.my-sm-0(type='submit') Buscar

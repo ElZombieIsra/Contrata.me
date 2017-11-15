@@ -219,6 +219,7 @@ app.get('/*',(req,res)=>{
 	}
 });
 app.post('/buscaDato',function (req,res) {
+	let busca = false;
 	var mail = req.session.mail;
 	var pass = req.session.pass;
 	if (req.session&&mail&&!busca) {
@@ -275,6 +276,7 @@ app.post('/buscaDato',function (req,res) {
 	}
 });
 app.post('/busqueda',(req, res)=>{
+	let busca = false;
 	var mail = req.session.mail;
 	var pass = req.session.pass;
 	if (req.session&&mail&&!busca) {

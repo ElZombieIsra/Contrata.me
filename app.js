@@ -219,6 +219,7 @@ app.get('/*',(req,res)=>{
 	}
 });
 app.post('/buscaDato',function (req,res) {
+	var mail = req.session.mail;
 	var pass = req.session.pass;
 	if (req.session&&mail&&!busca) {
 		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';
@@ -274,6 +275,7 @@ app.post('/buscaDato',function (req,res) {
 	}
 });
 app.post('/busqueda',(req, res)=>{
+	var mail = req.session.mail;
 	var pass = req.session.pass;
 	if (req.session&&mail&&!busca) {
 		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';

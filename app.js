@@ -149,7 +149,7 @@ app.get('/*',(req,res)=>{
 	let busca = false;
 	var mail = req.session.mail;
 	console.log('//-------------------------------------------'+req.path+'---------------------------------------------//');
-	if (req.path.equals('/logout')) {
+	if (req.path==='/logout') {
 		req.session.reset();
 		res.redirect('../');
 		res.end();

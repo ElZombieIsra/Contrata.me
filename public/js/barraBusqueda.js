@@ -51,3 +51,10 @@ $(document).ready(function () {
 
 	});
 });
+function validacion() {
+	alert('aber');
+	var aber = $('#navSearch').val().replace(' ','');
+	if (aber.equals('')||aber.equals(' ')) {
+		return false;
+	} else{return true;}
+}

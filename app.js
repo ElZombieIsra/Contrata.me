@@ -203,7 +203,7 @@ app.get('/logout', (req,res)=>{
 });
 app.post('/buscaDato',function (req,res) {
 		var values = ['%'+req.body.datos+'%'];
-		let q = "SELECT nombre FROM usuario WHERE nombre LIKE $1";
+		let q = "SELECT nombre FROM usuario WHERE nombre ILIKE $1";
 		client.query(q,values,(err,respuesta)=>{
 			try{
 				var jn = {rs:[]};
@@ -220,7 +220,7 @@ app.post('/buscaDato',function (req,res) {
 });
 app.post('/busqueda',(req, res)=>{
 	let busq = ['%'+req.body.bus+'%'];
-	let q = "SELECT * FROM usuario WHERE nombre LIKE $1";
+	let q = "SELECT * FROM usuario WHERE nombre ILIKE $1";
 	client.query(q,busq,(err,respuesta)=>{
 		try{
 			var jn = {rs:[]};

@@ -25,12 +25,6 @@ html
             .dropdown-menu#resSearch(aria-labelledby='navSearch')
           button.btn.btn-outline-primary.my-2.my-sm-0(type='submit') Buscar
         ul.navbar-nav.ml-auto
-          li.nav-item.dropdown
-            a.nav-link.dropdown-toggle(data-toggle='dropdown', href='#', role='button', aria-haspopup='true', aria-expanded='false') Notificaciones
-            .dropdown-menu.dropdown-menu-right
-              a.dropdown-item(href='#') Notificación
-              a.dropdown-item(href='#') Otra notificación
-              a.dropdown-item(href='#') Tal vez otra
           li.navbar-item
             a.nav-link.active(href='perfilUsuario') Perfil
             span.sr-only (actual)
@@ -45,7 +39,7 @@ html
           | jejejej
     .d-inline-block.mt-4(style='width: 80vw')
       .rounded.border.border-dark.bg-primary.mb-2.p-2
-        h5 Nombre del cliente
+        h5!= nombre
         hr
         #Ref
           .row.m-2

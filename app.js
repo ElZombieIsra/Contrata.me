@@ -5,12 +5,12 @@ const mysql=require('mysql');
 const bcrypt=require('bcrypt-nodejs');
 var session = require('client-sessions');
 const {Client} = require('pg');
-
+/*
 const client = new Client({
 	connectionString: process.env.DATABASE_URL,
   	ssl: true,
 });
-/*
+*/
 const client = new Client({
 	user: 'postgres',
 	host: 'localhost',
@@ -99,7 +99,7 @@ app.post('/consultarUsuario',(req,res)=>{
 			return res.send('Error. Intente de nuevo más tarde');
 		}else{
 			var resp = JSON.stringify(respuesta.rows[0]);
-			if (resp === 'undefined') {
+			if (resp.toString() === 'undefined') {
 				console.log('Error. No existe el usuario');
 				return res.send('No existe el usuario');
 			}else{
@@ -149,18 +149,23 @@ app.get('/*',(req,res)=>{
 	let busca = false;
 	var mail = req.session.mail;
 	console.log('//-------------------------------------------'+req.path+'---------------------------------------------//');
-	if (req.path==='/logout') {
+	if (req.path.toString().trim()=='/logout') {
+		console.log('=======================Bye============================');
 		req.session.reset();
 		res.redirect('../');
-		res.end();
+		busca = true;
 	}
 	var pass = req.session.pass;
-	if (req.session&&mail) {
+	if (req.session&&mail&&!busca) {
 		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';
 		var values =[mail,pass];
 		client.query(q, values,(err,respuesta)=>{
 			var isUser;
-			var resp = JSON.stringify(respuesta.rows[0]);
+			try{
+				var resp = JSON.stringify(respuesta.rows[0]);
+			}catch(er){
+				console.log('Error: '+er);
+			}
 			if (resp==='undefined') {
 				isUser = false;
 			}else{
@@ -192,9 +197,20 @@ app.get('/*',(req,res)=>{
 					res.send('vaiax3');
 				}else if (path.indexOf('js')!=-1) {
 					res.send('vaiax4');
+				}else if(path.indexOf('ico')!=-1){
+					res.send('vaiax5');
 				}else{
-					let route = path.replace('/','')
-					res.render(route);
+					let route = path.replace('/','').toString();
+					if (route==='perfilUsuario'||route==='modificaDatosUsuario'||route==='referenciasUsuario') {
+						client.query('SELECT * FROM usuario WHERE mail=$1',[mail],(err, respuesta)=>{
+							let name = respuesta.rows[0].nombre+' '+respuesta.rows[0].apellidos;
+							let jso = {nombre:name.toString()}
+							console.log(respuesta.rows[0]);
+							res.render(route,jso);
+						});
+					}else{
+						res.render(route);
+					}
 				}
 			}
 		});
@@ -220,6 +236,7 @@ app.post('/buscaDato',function (req,res) {
 		});
 });
 app.post('/busqueda',(req, res)=>{
+	console.log(req.path+' aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 	let busq = ['%'+req.body.bus+'%'];
 	let q = "SELECT * FROM usuario WHERE nombre ILIKE $1";
 	client.query(q,busq,(err,respuesta)=>{

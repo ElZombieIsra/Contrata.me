@@ -148,7 +148,8 @@ app.post('/consultarUsuario',(req,res)=>{
 app.get('/*',(req,res)=>{
 	let busca = false;
 	var mail = req.session.mail;
-	if (req.url.equals('/logout')) {
+	console.log('//-------------------------------------------'+req.path+'---------------------------------------------//');
+	if (req.path.equals('/logout')) {
 		req.session.reset();
 		res.redirect('../');
 		res.end();

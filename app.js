@@ -148,7 +148,11 @@ app.post('/consultarUsuario',(req,res)=>{
 app.get('/*',(req,res)=>{
 	let busca = false;
 	var mail = req.session.mail;
-	if (req.url) {}
+	if (req.url.equals('/logout')) {
+		req.session.reset();
+		res.redirect('../');
+		res.end();
+	}
 	var pass = req.session.pass;
 	if (req.session&&mail) {
 		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';
@@ -196,10 +200,6 @@ app.get('/*',(req,res)=>{
 	}else{
 		res.redirect('/i_sesion.html');
 	}
-});
-app.get('/logout', (req,res)=>{
-	req.session.reset();
-	res.redirect('../');
 });
 app.post('/buscaDato',function (req,res) {
 		var values = ['%'+req.body.datos+'%'];

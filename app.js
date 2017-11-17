@@ -99,7 +99,7 @@ app.post('/consultarUsuario',(req,res)=>{
 			return res.send('Error. Intente de nuevo más tarde');
 		}else{
 			try{
-				var resp = JSON.stringify(respuesta.rows[0]).toString();
+				var resp = JSON.stringify(respuesta.rows[0]);
 			}catch(err){
 				console.log('Error: '+err);
 				res.send('Error. Usuario no encontrado');

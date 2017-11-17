@@ -22,13 +22,15 @@ html
             a.nav-link.active(href='indexUsuario') Inicio
         form.form-inline(action='/busqueda', method='POST')
           .dropdown.show
-            input#navSearch.form-control.mr-sm-2.dropdown-toggle(aria-expanded='false', aria-haspopup='true', role='searchbox', type='text', autocomplete='off', placeholder='Buscar', aria-label='Buscar', style='width: 30vw', name='bus')
+            input#navSearch.form-control.mr-sm-2.dropdown-toggle(aria-expanded='false', aria-haspopup='true', role='searchbox', type='text', autocomplete='off', placeholder='Buscar trabajador', aria-label='Buscar', style='width: 30vw', name='bus')
             .dropdown-menu#resSearch(aria-labelledby='navSearch')
           button.btn.btn-outline-primary.my-2.my-sm-0(type='submit') Buscar
         ul.navbar-nav.ml-auto
           li.navbar-item
-            a.nav-link.active(href='perfilUsuario') Perfil
+            a.nav-link.active(href='publicitarUsuario') Publicítate
             span.sr-only (actual)
+          li.navbar-item
+            a.nav-link(href='perfilUsuario') Perfil
           li.navbar-item
             a.nav-link(href='../logout') Salir
     form

@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title Modificar datos
+    title Busqueda
     meta(charset='utf-8')
     meta(name='viewport', content='height=device-height,initial-scale=1')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css', integrity='sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M', crossorigin='anonymous')
@@ -21,10 +21,12 @@ html
             a.nav-link.active(href='indexUsuario') Inicio
         form.form-inline(action='/busqueda', method='POST')
           .dropdown.show
-            input#navSearch.form-control.mr-sm-2.dropdown-toggle(aria-expanded='false', aria-haspopup='true', role='searchbox', type='text', autocomplete='off', placeholder='Buscar', aria-label='Buscar', style='width: 30vw', name='bus', onsubmit='return validacion()')
+            input#navSearch.form-control.mr-sm-2.dropdown-toggle(aria-expanded='false', aria-haspopup='true', role='searchbox', type='text', autocomplete='off', placeholder='Buscar trabajador', aria-label='Buscar', style='width: 30vw', name='bus', onsubmit='return validacion()')
             .dropdown-menu#resSearch(aria-labelledby='navSearch')
           button.btn.btn-outline-primary.my-2.my-sm-0(type='submit') Buscar
         ul.navbar-nav.ml-auto
+          li.navbar-item
+            a.nav-link(href='publicitarUsuario') Publicítate
           li.navbar-item
             a.nav-link.active(href='perfilUsuario') Perfil
             span.sr-only (actual)
@@ -44,12 +46,14 @@ html
             a.nav-link(href='#') Delegación
       #resultados.mt-4
       each item in rs
+        -var name = 'visualizarContraUsuario?nombre='+item
         .row.m-2
           .col-1
           .col-2
             img(src='../img/agua.jpg', style='width: 25vh')
           .col
-            p= item
+            a(href=name) 
+              p= item
     script(src='https://code.jquery.com/jquery-3.2.1.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js', integrity='sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4', crossorigin='anonymous')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js', integrity='sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1', crossorigin='anonymous')

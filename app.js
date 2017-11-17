@@ -148,7 +148,6 @@ app.post('/consultarUsuario',(req,res)=>{
 app.get('/*',(req,res)=>{
 	let busca = false;
 	var mail = req.session.mail;
-	console.log('//-------------------------------------------'+req.path+'---------------------------------------------//');
 	if (req.path.toString().trim()=='/logout') {
 		console.log('=======================Bye============================');
 		req.session.reset();
@@ -188,7 +187,8 @@ app.get('/*',(req,res)=>{
 				res.send('No existe el usuario');
 				setTimeout(res.redirect('../registro.html'),3000);
 			}else{
-				var path = req.url;
+				var path = req.path;
+				console.log(path);
 				if (path.indexOf('css')!=-1) {
 					res.send('vaia');
 				}else if (path.indexOf('png')!=-1) {
@@ -201,13 +201,45 @@ app.get('/*',(req,res)=>{
 					res.send('vaiax5');
 				}else{
 					let route = path.replace('/','').toString();
-					if (route==='perfilUsuario'||route==='modificaDatosUsuario'||route==='referenciasUsuario') {
+					if (route==='perfilUsuario'||route==='modificaDatosUsuario') {
 						client.query('SELECT * FROM usuario WHERE mail=$1',[mail],(err, respuesta)=>{
 							let name = respuesta.rows[0].nombre+' '+respuesta.rows[0].apellidos;
-							let jso = {nombre:name.toString()}
-							console.log(respuesta.rows[0]);
+							let jso = {
+								nombre:name.toString(),
+								id:respuesta.rows[0].id
+							}
 							res.render(route,jso);
 						});
+					}else if (route==='visualizarContraUsuario'){
+						let name = req.param('nombre').toString();
+						let n = '';
+						for (var i = 0; i < name.length; i++) {
+							if (name.charAt(i)===" ") {
+								break;
+							}
+							n += name.charAt(i);
+						}
+						client.query('SELECT * FROM usuario WHERE nombre=$1',[n],(err, respuesta)=>{
+							let jso = {
+								nombre:respuesta.rows[0].nombre,
+								apellidos:respuesta.rows[0].apellidos,
+								id:respuesta.rows[0].id
+							}
+							console.log(jso);
+							res.render(route,jso);
+						});
+					}else if(route==='referenciasUsuario'){
+						let id = req.param('id').toString();
+						client.query('SELECT * FROM usuario WHERE id=$1',[id],(err,respuesta)=>{
+							let resp = respuesta.rows[0];
+							let jso ={
+								nombre: resp.nombre,
+								apellidos: resp.apellidos,
+								id: resp.id
+							}
+							res.render(route,jso);
+						});
+
 					}else{
 						res.render(route);
 					}

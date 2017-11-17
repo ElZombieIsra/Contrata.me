@@ -50,6 +50,27 @@ $(document).ready(function () {
 	$('#navSearch').blur(()=>{
 
 	});
+	$('#pubready').click(()=>{
+		let formData = {
+			'pubType':$('#pubtype').val(),
+			'desc':$('#desc').val()
+		};
+		$.ajax({
+			url:'/guardaPublicacion',
+			type:'POST',
+			cache: false,
+			data:formData,
+			success:function(data){
+				$('#ewe')[0].reset();
+				$('#snackbar').addClass("show").html("<strong>Publicacion creada con éxito</strong>");
+				setTimeout(function(){$('#snackbar').removeClass("show");},3000);
+			},
+			error:function (jqXHR, txtStatus,err) {
+				$('#snackbar').addClass("show").html("<strong>Error. Intente de nuevo más tarde. <br> Si el problema persiste, contacte a un administrador</strong>");
+				setTimeout(function(){$('#snackbar').removeClass("show");},3000);
+			}
+		});
+	});
 });
 function validacion() {
 	alert('aber');

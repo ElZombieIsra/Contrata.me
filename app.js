@@ -14,7 +14,7 @@ const client = new Client({
 const client = new Client({
 	user: 'postgres',
 	host: 'localhost',
-	database: 'node',
+	database: 'aber',
 	password: 'n0m3l0',
 	port: 5432,
 });
@@ -78,7 +78,7 @@ app.post('/agregarUsuario',(req,res)=>{
 		return res.send('Usuario agregado');
 	});
 	*/
-	var text = 'INSERT INTO usuario(mail,pass,nombre,apellidos) VALUES($1,$2,$3,$4)';
+	var text = 'INSERT INTO usuario(mail,pass,nombre,apellido) VALUES($1,$2,$3,$4)';
 	var values = [mail,hashed,nombre,ap];
 	client.query(text,values,(err,respuesta)=>{
 		if (err) {
@@ -91,7 +91,7 @@ app.post('/agregarUsuario',(req,res)=>{
 app.post('/consultarUsuario',(req,res)=>{
 	let mail=req.body.mail;
 	let pass=req.body.pass;
-	var q = 'SELECT mail, pass FROM usuario WHERE mail=$1';
+	var q = 'SELECT id_usu,mail, pass FROM usuario WHERE mail=$1';
 	var values =[mail];
 	client.query(q, values,(err,respuesta)=>{
 		if (err) {
@@ -106,10 +106,10 @@ app.post('/consultarUsuario',(req,res)=>{
 				try{
 					var JSPAR = JSON.parse(resp);
 					var ok = bcrypt.compareSync(pass,JSPAR.pass);
-					console.log(ok);
 					if (mail===JSPAR.mail&&ok) {
 						req.session.mail=JSPAR.mail;
 						req.session.pass=JSPAR.pass;
+						req.session.id=JSPAR.id_usu;
 						return res.send('Sí existe el usuario');
 					}else{
 						res.send('Usuario no encontrado');
@@ -149,7 +149,6 @@ app.get('/*',(req,res)=>{
 	let busca = false;
 	var mail = req.session.mail;
 	if (req.path.toString().trim()=='/logout') {
-		console.log('=======================Bye============================');
 		req.session.reset();
 		res.redirect('../');
 		busca = true;
@@ -188,7 +187,6 @@ app.get('/*',(req,res)=>{
 				setTimeout(res.redirect('../registro.html'),3000);
 			}else{
 				var path = req.path;
-				console.log(path);
 				if (path.indexOf('css')!=-1) {
 					res.send('vaia');
 				}else if (path.indexOf('png')!=-1) {
@@ -201,46 +199,51 @@ app.get('/*',(req,res)=>{
 					res.send('vaiax5');
 				}else{
 					let route = path.replace('/','').toString();
-					if (route==='perfilUsuario'||route==='modificaDatosUsuario') {
+					if (route==='modificaDatosUsuario') {
 						client.query('SELECT * FROM usuario WHERE mail=$1',[mail],(err, respuesta)=>{
-							let name = respuesta.rows[0].nombre+' '+respuesta.rows[0].apellidos;
+							let name = respuesta.rows[0].nombre+' '+respuesta.rows[0].apellido;
 							let jso = {
 								nombre:name.toString(),
-								id:respuesta.rows[0].id
+								id:respuesta.rows[0].id_usu
 							}
 							res.render(route,jso);
 						});
 					}else if (route==='visualizarContraUsuario'){
-						let name = req.param('nombre').toString();
-						let n = '';
-						for (var i = 0; i < name.length; i++) {
-							if (name.charAt(i)===" ") {
-								break;
-							}
-							n += name.charAt(i);
-						}
-						client.query('SELECT * FROM usuario WHERE nombre=$1',[n],(err, respuesta)=>{
+						let id = req.param('id').toString();
+						client.query('SELECT * FROM usuario WHERE id_usu=$1',[id],(err, respuesta)=>{
 							let jso = {
 								nombre:respuesta.rows[0].nombre,
-								apellidos:respuesta.rows[0].apellidos,
-								id:respuesta.rows[0].id
+								apellidos:respuesta.rows[0].apellido,
+								id:respuesta.rows[0].id_usu
 							}
-							console.log(jso);
 							res.render(route,jso);
 						});
 					}else if(route==='referenciasUsuario'){
 						let id = req.param('id').toString();
-						client.query('SELECT * FROM usuario WHERE id=$1',[id],(err,respuesta)=>{
+						client.query('SELECT * FROM usuario WHERE id_usu=$1',[id],(err,respuesta)=>{
 							let resp = respuesta.rows[0];
 							let jso ={
 								nombre: resp.nombre,
-								apellidos: resp.apellidos,
-								id: resp.id
+								apellidos: resp.apellido,
+								id: resp.id_usu
 							}
 							res.render(route,jso);
 						});
 
-					}else{
+					}else if(route==='perfilUsuario'||route==='publicitarUsuario'){
+						client.query('SELECT * FROM usuario WHERE mail=$1',[mail],(err, respuesta)=>{
+							let resp = respuesta.rows[0];
+							let jso = {
+								nombre: resp.nombre,
+								apellidos: resp.apellido,
+								mail: resp.mail,
+								direccion: resp.direccion,
+								noInt: resp.num_int
+							}
+							res.render(route,jso);
+						});
+					}
+					else{
 						res.render(route);
 					}
 				}
@@ -349,11 +352,76 @@ app.post('/busqueda',(req, res)=>{
 					try{
 						var jn = {rs:[]};
 						for (var i = respuesta.rowCount - 1; i >= 0; i--) {
-							jn.rs[i]=respuesta.rows[i].nombre +' '+respuesta.rows[i].apellidos;	
+							let resp = respuesta.rows[i];
+							jn.rs[i]={ 
+								nombre:resp.nombre,
+								apellidos:resp.apellido,
+								id: resp.id_usu
+							}
 						}
 						res.render('busquedaTrabajadoresUsuario',jn);
 					}catch(error){
 						console.log('Error '+error);
+					}
+				});
+			}
+		});
+	}else{
+		res.redirect('/i_sesion.html');
+	}
+});
+app.post('/guardaPublicacion',(req,res)=>{
+	let busca = false;
+	var mail = req.session.mail;
+	var pass = req.session.pass;
+	if (req.session&&mail&&!busca) {
+		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';
+		var values =[mail,pass];
+		client.query(q, values,(err,respuesta)=>{
+			var isUser;
+			try{
+				var resp = JSON.stringify(respuesta.rows[0]);
+			}catch(er){
+				console.log('Error: '+er);
+			}
+			if (resp.toString()==='undefined') {
+				isUser = false;
+			}else{
+				try{
+					var JSPAR = JSON.parse(resp);
+					if (err) {
+						isUser=false;
+					}
+					if (mail===JSPAR.mail&&pass===JSPAR.pass) {
+						isUser=true;
+					}else{
+						isUser=false;
+					}
+				}catch(err){
+					console.log('Error: '+err);
+					isUser=false;
+				}
+			}
+			if (!isUser) {
+				res.send('No existe el usuario');
+				setTimeout(res.redirect('../i_sesion'),3000);
+			}else{
+				var date = new Date();
+				var year = date.getFullYear();
+			    var month = date.getMonth() + 1;
+			    month = (month < 10 ? "0" : "") + month;
+			    var day  = date.getDate();
+			    day = (day < 10 ? "0" : "") + day;
+			    let fecha = day+' del '+month+' de '+year;
+				let form = req.body;
+				let values = [form.pubType,form.desc,fecha,req.session.id];
+				client.query('INSERT INTO publicacion (trabajoarealizar,despublic,fecha,id_usu) VALUES ($1,$2,$3,$4)',values,(err, respuesta)=>{
+					console.log(err);
+					console.log(respuesta);
+					if (err) {
+						res.send('Error');
+					}else{
+						res.send('Va');
 					}
 				});
 			}

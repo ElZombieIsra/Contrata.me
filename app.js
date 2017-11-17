@@ -98,8 +98,13 @@ app.post('/consultarUsuario',(req,res)=>{
 			console.log('Error: ',err);
 			return res.send('Error. Intente de nuevo más tarde');
 		}else{
-			var resp = JSON.stringify(respuesta.rows[0]);
-			if (resp.toString() === 'undefined') {
+			try{
+				var resp = JSON.stringify(respuesta.rows[0]).toString();
+			}catch(err){
+				console.log('Error: '+err);
+				res.send('Error. Usuario no encontrado');
+			}
+			if (resp === 'undefined') {
 				console.log('Error. No existe el usuario');
 				return res.send('No existe el usuario');
 			}else{
@@ -210,14 +215,18 @@ app.get('/*',(req,res)=>{
 						});
 					}else if (route==='visualizarContraUsuario'){
 						let id = req.param('id').toString();
-						client.query('SELECT * FROM usuario WHERE id_usu=$1',[id],(err, respuesta)=>{
-							let jso = {
-								nombre:respuesta.rows[0].nombre,
-								apellidos:respuesta.rows[0].apellido,
-								id:respuesta.rows[0].id_usu
-							}
-							res.render(route,jso);
-						});
+						if (id===req.session.id.toString()) {
+							res.redirect('/perfilUsuario');
+						}else{
+							client.query('SELECT * FROM usuario WHERE id_usu=$1',[id],(err, respuesta)=>{
+								let jso = {
+									nombre:respuesta.rows[0].nombre,
+									apellidos:respuesta.rows[0].apellido,
+									id:respuesta.rows[0].id_usu
+								}
+								res.render(route,jso);
+							});
+						}
 					}else if(route==='referenciasUsuario'){
 						let id = req.param('id').toString();
 						client.query('SELECT * FROM usuario WHERE id_usu=$1',[id],(err,respuesta)=>{

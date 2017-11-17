@@ -5,12 +5,12 @@ const mysql=require('mysql');
 const bcrypt=require('bcrypt-nodejs');
 var session = require('client-sessions');
 const {Client} = require('pg');
-
+/*
 const client = new Client({
 	connectionString: process.env.DATABASE_URL,
   	ssl: true,
 });
-/*
+*/
 const client = new Client({
 	user: 'postgres',
 	host: 'localhost',
@@ -212,6 +212,12 @@ app.get('/*',(req,res)=>{
 								id:respuesta.rows[0].id_usu
 							}
 							res.render(route,jso);
+						});
+					}else if(route==='indexUsuario'){
+						let jso = {rs:[]} ;
+						client.query('SELECT * FROM publicacion LIMIT 5',(err,respuesta)=>{
+							console.log(respuesta);
+							res.render(route,respuesta);
 						});
 					}else if (route==='visualizarContraUsuario'){
 						let id = req.param('id').toString();

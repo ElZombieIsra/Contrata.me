@@ -1,9 +1,52 @@
+@import url('https://fonts.googleapis.com/css?family=Vollkorn SC');
+
+#eslogan{
+    font-family: 'Vollkorn SC';
+}
+
 body {
     font-family: 'Montserrat', sans-serif;
 }
+
+#indexInvitado{
+    background-color: #01161E;
+    color: white;
+}
+
+#indexInvitado input[type=button]{
+    color: white;
+    transition: 0.5s;
+    -webkit-transition: 0.5s;
+}
+
+#indexInvitado input[type=button]:hover {
+    border-radius: 5px;
+}
+
+#indexInvitado input[type=text], input[type=password], input[type=email] {
+    background-color: #598392;
+    color: white;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+}
+
+#indexInvitado input[type=text]:focus, [type=text]:focus, [type=text]:focus {
+    background-color: white;
+    color: black;
+}
+
+#barraNavegacion, #barraNavegacion a{
+    background-color: #124559;
+    border: 2px;
+    border-radius: 15px;
+    color: white;
+
+}
+
 #jumbo{
-	background-color: #3A9BFF;
+	background-color: #01161E;
 	height: 100vh;
+    color:  #ffffff;
 }
 .anuncio{
 	background-color: #A96E0C;

@@ -11,8 +11,8 @@
 	<link rel="stylesheet" type="text/css" href="css/estilos.css">
 	<link rel="stylesheet" type="text/css" href="css/snackbar.css">
 </head>
-<body class="registro">
-	<nav class="navbar fixed-top navbar-expand-md navbar-light" style="background-color: #F6A623;">
+<body id="indexInvitado">
+	<nav class="navbar fixed-top navbar-expand-md navbar-light" id="barraNavegacion">
 			<a class="navbar-brand" href="#">
     			<img src="img/logo.png" height="25" height="25" alt=""> Contrata.me
   			</a>
@@ -58,16 +58,17 @@
 				<div class="row" style="height: 5vh"></div>
 				<div class="row">
 					<div class="col-2">Nombre</div>
-					<div class="col"><input class="form-control" type="text" name="nombre"></div>
+					<div class="col"><input class="form-control" type="text" name="nombre" style="width: 100%"></div>
 				</div>
 				<div class="row" style="height: 5vh"></div>
 				<div class="row">
 					<div class="col-2">Apellidos</div>
-					<div class="col"><input class="form-control" type="text" name="apellidos"></div>
+					<div class="col"><input class="form-control" type="text" name="apellidos" style="width: 100%"></div>
 				</div>
 				<div class="row" style="height: 5vh"></div>
 				<div class="row">
-					<div class="col"><input type="button" class="btn btn-outline-dark" value="Reg&iacute;strate" name="regis-submit" id="registroEnviar"></div>
+					<div class="col" id="button1">
+						<input type="button" class="btn btn-outline-dark" value="Reg&iacute;strate" name="regis-submit" id="registroEnviar"></div>
 				</div>
 			</form>
 		</div>

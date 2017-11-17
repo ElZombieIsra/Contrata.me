@@ -9,8 +9,8 @@ html
     link(rel='icon', href='../img/logo.png')
     link(href='https://fonts.googleapis.com/css?family=Montserrat', rel='stylesheet')
     link(rel='stylesheet', type='text/css', href='css/estilos.css')
-  body.bg-light
-    nav.navbar.sticky-top.navbar-expand-md.navbar-light(style='background-color: #F6A623')
+  body#indexInvitado
+    nav.navbar.sticky-top.navbar-expand-md.navbar-light(id='barraNavegacion')
       a.navbar-brand(href='#')
         img(src='../img/logo.png', height='25', alt='')
         |  Contrata.me
@@ -46,7 +46,7 @@ html
           button#myRef.btn.btn-dark.btn-block.btn-lg Mis referencias
         .invisible Que tranza, jaja
     .d-inline-block.mt-4(style='width: 60vw')
-      .rounded.border.border-dark.bg-primary.mb-2.p-2(style='height: 70vh')
+      .rounded.border.border-dark.mb-2.p-2(style='height: 70vh')
         h5!= nombre 
         hr
         div

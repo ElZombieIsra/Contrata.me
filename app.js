@@ -315,7 +315,6 @@ app.post('/buscaDato',function (req,res) {
 						}
 						res.send(jn);
 					} catch(err){
-						console.log(err);
 						res.send ('Error');
 					}
 				});
@@ -362,16 +361,18 @@ app.post('/busqueda',(req, res)=>{
 				setTimeout(res.redirect('../i_sesion'),3000);
 			}else{
 				let busq = ['%'+req.body.bus+'%'];
-				let q = "SELECT * FROM usuario WHERE nombre ILIKE $1";
+				let q = "SELECT * FROM publicacion WHERE trabajoarealizar ILIKE $1";
 				client.query(q,busq,(err,respuesta)=>{
 					try{
 						var jn = {rs:[]};
 						for (var i = respuesta.rowCount - 1; i >= 0; i--) {
 							let resp = respuesta.rows[i];
 							jn.rs[i]={ 
-								nombre:resp.nombre,
-								apellidos:resp.apellido,
-								id: resp.id_usu
+								pubType:resp.trabajoarealizar,
+								desc:resp.despublic,
+								fecha:resp.fecha,
+								idPub: resp.id_public,
+								id:resp.id_usu
 							}
 						}
 						res.render('busquedaTrabajadoresUsuario',jn);

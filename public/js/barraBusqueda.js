@@ -4,9 +4,6 @@ $(document).ready(function () {
 	$('#modPer').on('click', ()=>{
 		$(location).attr('href',url+'/../modificaDatosUsuario');
 	});
-	$('#myRef').on('click',()=>{
-		$(location).attr('href',url+'/../referenciasUsuario');
-	});
 	$('#navSearch').focus(function(){
 		$('#navSearch').on('keyup', function(key){
 			if (key.keyCode!=8&&$('#navSearch').val()!='') {

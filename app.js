@@ -228,16 +228,21 @@ app.get('/*',(req,res)=>{
 							});
 						}
 					}else if(route==='referenciasUsuario'){
-						let id = req.param('id').toString();
-						client.query('SELECT * FROM usuario WHERE id_usu=$1',[id],(err,respuesta)=>{
-							let resp = respuesta.rows[0];
-							let jso ={
-								nombre: resp.nombre,
-								apellidos: resp.apellido,
-								id: resp.id_usu
-							}
-							res.render(route,jso);
-						});
+						try{	
+							let id = req.param('id').toString();
+							client.query('SELECT * FROM usuario WHERE id_usu=$1',[id],(err,respuesta)=>{
+								let resp = respuesta.rows[0];
+								let jso ={
+									nombre: resp.nombre,
+									apellidos: resp.apellido,
+									id: resp.id_usu
+								}
+								res.render(route,jso);
+							});
+						}catch(err){
+							console.log(err);
+							res.redirect('/perfilUsuario');
+						}
 
 					}else if(route==='perfilUsuario'||route==='publicitarUsuario'){
 						client.query('SELECT * FROM usuario WHERE mail=$1',[mail],(err, respuesta)=>{
@@ -247,7 +252,8 @@ app.get('/*',(req,res)=>{
 								apellidos: resp.apellido,
 								mail: resp.mail,
 								direccion: resp.direccion,
-								noInt: resp.num_int
+								noInt: resp.num_int,
+								id:resp.id_usu
 							}
 							res.render(route,jso);
 						});

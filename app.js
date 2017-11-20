@@ -153,6 +153,7 @@ app.post('/consultarUsuario',(req,res)=>{
 app.get('/*',(req,res)=>{
 	let busca = false;
 	var mail = req.session.mail;
+	var id = req.session.id;
 	if (req.path.toString().trim()=='/logout') {
 		req.session.reset();
 		res.redirect('../');
@@ -160,8 +161,8 @@ app.get('/*',(req,res)=>{
 	}
 	var pass = req.session.pass;
 	if (req.session&&mail&&!busca) {
-		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';
-		var values =[mail,pass];
+		var q = 'SELECT mail, pass FROM usuario WHERE id_usu=$1 AND pass=$2';
+		var values =[id,pass];
 		client.query(q, values,(err,respuesta)=>{
 			var isUser;
 			try{
@@ -188,8 +189,7 @@ app.get('/*',(req,res)=>{
 				}
 			}
 			if (!isUser) {
-				res.send('No existe el usuario');
-				setTimeout(res.redirect('../registro.html'),3000);
+				res.redirect('../registro.html');
 			}else{
 				var path = req.path;
 				if (path.indexOf('css')!=-1) {
@@ -205,18 +205,16 @@ app.get('/*',(req,res)=>{
 				}else{
 					let route = path.replace('/','').toString();
 					if (route==='modificaDatosUsuario') {
-						client.query('SELECT * FROM usuario WHERE mail=$1',[mail],(err, respuesta)=>{
+						client.query('SELECT * FROM usuario WHERE id_usu=$1',[id],(err, respuesta)=>{
 							let name = respuesta.rows[0].nombre+' '+respuesta.rows[0].apellido;
 							let jso = {
-								nombre:name.toString(),
-								id:respuesta.rows[0].id_usu
+								rows: respuesta.rows[0]
 							}
 							res.render(route,jso);
 						});
 					}else if(route==='indexUsuario'){
 						let jso = {rs:[]} ;
 						client.query('SELECT * FROM publicacion LIMIT 5',(err,respuesta)=>{
-							console.log(respuesta);
 							res.render(route,respuesta);
 						});
 					}else if (route==='visualizarContraUsuario'){
@@ -241,9 +239,14 @@ app.get('/*',(req,res)=>{
 								let jso ={
 									nombre: resp.nombre,
 									apellidos: resp.apellido,
-									id: resp.id_usu
+									id: resp.id_usu,
+									calf: []
 								}
-								res.render(route,jso);
+								client.query('SELECT * FROM calificacion WHERE id_usu=$1',[id],(err,resp)=>{
+									jso.calf = resp.rows;
+									console.log(resp.rows);
+									res.render(route,jso);
+								});
 							});
 						}catch(err){
 							console.log(err);
@@ -251,7 +254,7 @@ app.get('/*',(req,res)=>{
 						}
 
 					}else if(route==='perfilUsuario'||route==='publicitarUsuario'){
-						client.query('SELECT * FROM usuario WHERE mail=$1',[mail],(err, respuesta)=>{
+						client.query('SELECT * FROM usuario WHERE mail=$1 LIMIT 5',[mail],(err, respuesta)=>{
 							let resp = respuesta.rows[0];
 							let jso = {
 								nombre: resp.nombre,
@@ -263,8 +266,20 @@ app.get('/*',(req,res)=>{
 							}
 							res.render(route,jso);
 						});
-					}
-					else{
+					}else if (route==='contratarTrabUsuario') {
+						let ide = req.param('id').toString();
+						let jso = {
+							r:{},
+							name:''
+						};
+						client.query('SELECT * FROM publicacion WHERE id_public=$1',[ide],(err,resp)=>{
+							jso.r = resp.rows[0];
+							client.query('SELECT nombre,apellido FROM usuario WHERE id_usu=$1',[resp.rows[0].id_usu],(err, r)=>{
+								jso.name = r.rows[0].nombre + ' '+r.rows[0].apellido;
+								res.render(route,jso);
+							});
+						});
+					}else{
 						res.render(route);
 					}
 				}
@@ -307,7 +322,6 @@ app.post('/buscaDato',function (req,res) {
 				}
 			}
 			if (!isUser) {
-				res.send('No existe el usuario');
 				setTimeout(res.redirect('../i_sesion'),3000);
 			}else{
 				var values = ['%'+req.body.datos+'%'];
@@ -363,7 +377,6 @@ app.post('/busqueda',(req, res)=>{
 				}
 			}
 			if (!isUser) {
-				res.send('No existe el usuario');
 				setTimeout(res.redirect('../i_sesion'),3000);
 			}else{
 				let busq = ['%'+req.body.bus+'%'];
@@ -425,7 +438,6 @@ app.post('/guardaPublicacion',(req,res)=>{
 				}
 			}
 			if (!isUser) {
-				res.send('No existe el usuario');
 				setTimeout(res.redirect('../i_sesion'),3000);
 			}else{
 				var date = new Date();
@@ -439,13 +451,148 @@ app.post('/guardaPublicacion',(req,res)=>{
 				let values = [form.pubType,form.desc,fecha,req.session.id];
 				client.query('INSERT INTO publicacion (trabajoarealizar,despublic,fecha,id_usu) VALUES ($1,$2,$3,$4)',values,(err, respuesta)=>{
 					console.log(err);
-					console.log(respuesta);
 					if (err) {
 						res.send('Error');
 					}else{
 						res.send('Va');
 					}
 				});
+			}
+		});
+	}else{
+		res.redirect('/i_sesion.html');
+	}
+});
+app.post('/actualizaDatos', function (req,res) {
+	let busca = false;
+	var mail = req.session.mail;
+	var pass = req.session.pass;
+	var id = req.session.id;
+	if (req.session&&mail&&!busca) {
+		var q = 'SELECT mail, pass FROM usuario WHERE mail=$1 AND pass=$2';
+		var values =[mail,pass];
+		client.query(q, values,(err,respuesta)=>{
+			var isUser;
+			try{
+				var resp = JSON.stringify(respuesta.rows[0]);
+			}catch(er){
+				console.log('Error: '+er);
+			}
+			if (resp.toString()==='undefined') {
+				isUser = false;
+			}else{
+				try{
+					var JSPAR = JSON.parse(resp);
+					if (err) {
+						isUser=false;
+					}
+					if (mail===JSPAR.mail&&pass===JSPAR.pass) {
+						isUser=true;
+					}else{
+						isUser=false;
+					}
+				}catch(err){
+					console.log('Error: '+err);
+					isUser=false;
+				}
+			}
+			if (!isUser) {
+				setTimeout(res.redirect('../i_sesion'),3000);
+			}else{
+				let d = req.body;
+				let mai=d.mail.toString();
+				let pas=d.pass.toString();
+				let name=d.nombre.toString();
+				let last=d.apellido.toString();
+				let address=d.direccion.toString();
+				let noInt=d.noInt.toString();
+				let ma=false;
+				let pa=false;
+				let na=false;
+				let la=false;
+				let ad=false;
+				let no=false;
+				client.query('SELECT * FROM usuario WHERE id_usu=$1',[id],(err, resp)=>{
+					if (mai!==resp.rows[0].mail&&mai!=''&&mai!=' ') {
+						ma=true;
+					}
+					if (pas!=''&&pas!=' '&&!bcrypt.compareSync(pas,resp.rows[0].pass)) {
+						pa=true;
+					}
+					if (name!==''&&name!==' '&&name!=resp.rows[0].nombre) {
+						na=true;
+					}
+					if (last!==''&&last!==' '&&last!=resp.rows[0].apellido) {
+						la=true;
+					}
+					if (address!==''&&address!==' '&&address!=resp.rows[0].direccion) {
+						ad=true;
+					}
+					if (noInt!==''&&noInt!==' '&&noInt!=resp.rows[0].num_int) {
+						no=true;
+					}
+					if (ma||pa||na||la||ad||no) {
+						let num = 0;
+						let values = [];
+						let q = 'UPDATE usuario SET ';
+						let q2 = 'WHERE id_usu='+id;
+						if (ma) {
+							num += 1;
+							q += 'mail=$'+num+' ';
+							values.push(mai);
+						}
+						if (pa) {
+							if (num!=0) {
+								q+=', ';
+							}
+							num +=1;
+							q += 'pass=$'+num+' ';
+							values.push(pas);
+						}
+						if (na) {
+							if (num!=0) {
+								q+=', ';
+							}
+							num +=1;
+							q += 'nombre=$'+num+' ';
+							values.push(name);
+						}
+						if (la) {
+							if (num!=0) {
+								q+=', ';
+							}
+							num+=1;
+							q += 'apellido=$'+num+' ';
+							values.push(last);
+						}
+						if (ad) {
+							if (num!=0) {
+								q+=', ';
+							}
+							num+=1;
+							q+= 'direccion=$'+num+' ';
+							values.push(address);
+						}
+						if (no) {
+							if (num!=0) {
+								q+=', ';
+							}
+							num+=1;
+							q+= 'num_int=$'+num+' ';
+							values.push(noInt);
+						}
+						q+=q2;
+						client.query(q,values,(err,resp)=>{
+							if (err!=null) {
+								console.log(err);
+								res.send('Ocurrió un error');
+							}else{
+								res.send('Datos guardados');
+							}
+						});
+					}
+				});
+				/**/
 			}
 		});
 	}else{

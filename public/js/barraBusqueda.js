@@ -68,6 +68,32 @@ $(document).ready(function () {
 			}
 		});
 	});
+	$('#actualizaDatos').click(()=>{
+		let formData={
+			mail:$('#mail').val(),
+			pass: $('#pass').val(),
+			nombre: $('#nombre').val(),
+			apellido: $('#apellidos').val(),
+			direccion: $('#direccion').val(),
+			noInt: $('#noInt').val()
+		};
+		$.ajax({
+			url:'/actualizaDatos',
+			type:'POST',
+			cache: false,
+			data:formData,
+			success: (data)=>{
+				$('#formDat')[0].reset();
+				$('#snackbar').addClass("show").html("<strong>"+data+"</strong>");
+				setTimeout(function(){$('#snackbar').removeClass("show");},3000);
+			},
+			error: ()=>{
+				$('#snackbar').addClass("show").html("<strong>Ocurrió un error</strong>");
+				setTimeout(function(){$('#snackbar').removeClass("show");},3000);
+			}
+		});
+
+	});
 });
 function validacion() {
 	alert('aber');

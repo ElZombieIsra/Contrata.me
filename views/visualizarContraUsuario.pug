@@ -41,13 +41,22 @@ html
         p.text-dark.text-center 80 de 100 personas
         a(href='referenciasUsuario?id='+id)
           button.btn.btn-dark.btn-block.btn-lg(id='asdf') Referencias
+        br
+        a(href='calificarTrabajUsuario?id='+id)
+          button.btn.btn-dark.btn-block.btn-lg(id='asdf') Calificar
         .invisible Que tranza, jaja
     .d-inline-block.mt-4(style='width: 60vw')
       .rounded.border.border-dark.mb-2.p-2(style='height: 70vh')
-        h5= nombre + ' ' +apellidos
+        h5= r.nombre + ' ' +r.apellido
         hr
         div
-          p Aquí van los datos pero no hay, jejejeje
+          div
+          - var ja = 'Correo:  '+r.mail
+          p!= ja
+          if direccion
+            p!= 'Direccion:  '+r.direccion
+          else 
+            p!= 'Direccion:  '
       .invisible 7u7
     script(src='https://code.jquery.com/jquery-3.2.1.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js', integrity='sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4', crossorigin='anonymous')

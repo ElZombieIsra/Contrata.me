@@ -33,17 +33,6 @@ html
           li.navbar-item
             a.nav-link(href='../logout') Salir
     div
-      .row.mt-2.ml-2
-        .col
-          a(href='#filtros', data-toggle='collapse', aria-expanded='false', aria-controls='filtros') Filtrar
-      .collapse#filtros
-        .row.text-center
-          .col
-            a.nav-link(href='#') Trabajo
-          .col
-            a.nav-link(href='#') Clasificación
-          .col
-            a.nav-link(href='#') Delegación
       #resultados.mt-4
       each item in rs
         -var name = 'contratarTrabUsuario?id='+item.idPub

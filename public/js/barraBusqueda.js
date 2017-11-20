@@ -3,7 +3,7 @@ $(document).ready(function () {
 	var url = window.location.href;
 	$('#modPer').on('click', ()=>{
 		$(location).attr('href',url+'/../modificaDatosUsuario');
-	});
+	});/*
 	$('#navSearch').focus(function(){
 		$('#navSearch').on('keyup', function(key){
 			if (key.keyCode!=8&&$('#navSearch').val()!='') {
@@ -47,6 +47,7 @@ $(document).ready(function () {
 	$('#navSearch').blur(()=>{
 
 	});
+¨*/
 	$('#pubready').click(()=>{
 		let formData = {
 			'pubType':$('#pubtype').val(),

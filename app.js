@@ -223,11 +223,8 @@ app.get('/*',(req,res)=>{
 							res.redirect('/perfilUsuario');
 						}else{
 							client.query('SELECT * FROM usuario WHERE id_usu=$1',[id],(err, respuesta)=>{
-								let jso = {
-									nombre:respuesta.rows[0].nombre,
-									apellidos:respuesta.rows[0].apellido,
-									id:respuesta.rows[0].id_usu
-								}
+								let jso = {r:{}}
+								jso.r = respuesta.rows[0];
 								res.render(route,jso);
 							});
 						}
@@ -254,7 +251,7 @@ app.get('/*',(req,res)=>{
 						}
 
 					}else if(route==='perfilUsuario'||route==='publicitarUsuario'){
-						client.query('SELECT * FROM usuario WHERE mail=$1 LIMIT 5',[mail],(err, respuesta)=>{
+						client.query('SELECT * FROM usuario WHERE mail=$1',[mail],(err, respuesta)=>{
 							let resp = respuesta.rows[0];
 							let jso = {
 								nombre: resp.nombre,
@@ -272,14 +269,19 @@ app.get('/*',(req,res)=>{
 							r:{},
 							name:''
 						};
-						client.query('SELECT * FROM publicacion WHERE id_public=$1',[ide],(err,resp)=>{
+						client.query('SELECT * FROM publicacion WHERE id_public=$1 LIMIT 5',[ide],(err,resp)=>{
 							jso.r = resp.rows[0];
 							client.query('SELECT nombre,apellido FROM usuario WHERE id_usu=$1',[resp.rows[0].id_usu],(err, r)=>{
 								jso.name = r.rows[0].nombre + ' '+r.rows[0].apellido;
 								res.render(route,jso);
 							});
 						});
-					}else{
+					}else if (route==='calificarTrabajUsuario') {
+						let id = req.param('id').toString();
+						let jso = {};
+						res.render(route);
+					}
+					else{
 						res.render(route);
 					}
 				}

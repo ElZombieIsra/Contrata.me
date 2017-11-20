@@ -93,9 +93,32 @@ $(document).ready(function () {
 				setTimeout(function(){$('#snackbar').removeClass("show");},3000);
 			}
 		});
-
+	});
+	$('#btnA').click(()=>{
+		let formData = {
+			idCalifica : $('#myId').val(),
+			idUsu : $('#hisId').val(),
+			calif : $('#myRange').val(),
+			coment : $('#txtA').val()
+		};
+		$.ajax({
+			url:'/calificaUsuario',
+			type: 'POST',
+			cache: false,
+			data: formData,
+			success:(data)=>{
+				$('#myForm')[0].reset();
+				$('#snackbar').addClass("show").html("<strong>"+data+"</strong>");
+				setTimeout(function(){$('#snackbar').removeClass("show");},3000);
+			},
+			error:()=>{
+				$('#snackbar').addClass("show").html("<strong>Ocurrió un error</strong>");
+				setTimeout(function(){$('#snackbar').removeClass("show");},3000);
+			}
+		});
 	});
 });
+
 function validacion() {
 	alert('aber');
 	var aber = $('#navSearch').val().replace(' ','');

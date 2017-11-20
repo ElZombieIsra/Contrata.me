@@ -241,7 +241,6 @@ app.get('/*',(req,res)=>{
 								}
 								client.query('SELECT * FROM calificacion WHERE id_usu=$1',[id],(err,resp)=>{
 									jso.calf = resp.rows;
-									console.log(resp.rows);
 									res.render(route,jso);
 								});
 							});
@@ -277,9 +276,28 @@ app.get('/*',(req,res)=>{
 							});
 						});
 					}else if (route==='calificarTrabajUsuario') {
-						let id = req.param('id').toString();
-						let jso = {};
-						res.render(route);
+						let ide = req.param('id').toString();
+						let jso = {
+							usu:{},
+							calf:'',
+							cuenta : '',
+							idCalifica: req.session.id
+						};
+						let asd=0;
+						client.query('SELECT * FROM usuario WHERE id_usu=$1',[ide],(err, resp)=>{
+							jso.usu = resp.rows[0];
+							client.query('SELECT * FROM calificacion WHERE id_usu=$1',[ide],(err,resp)=>{
+								if (resp.rowCount!=0) {
+									for (var i = resp.rowCount - 1; i >= 0; i--) {
+										asd += parseInt(resp.rows[i].calif);
+									}
+									asd = (asd / resp.rowCount)*10;
+									jso.calf = asd;
+									jso.cuenta = resp.rowCount;
+								}
+								res.render(route,jso);
+							});
+						});
 					}
 					else{
 						res.render(route);
@@ -451,7 +469,7 @@ app.post('/guardaPublicacion',(req,res)=>{
 			    let fecha = day+' del '+month+' de '+year;
 				let form = req.body;
 				let values = [form.pubType,form.desc,fecha,req.session.id];
-				client.query('INSERT INTO publicacion (trabajoarealizar,despublic,fecha,id_usu) VALUES ($1,$2,$3,$4)',values,(err, respuesta)=>{
+				client.query('INSERT INTO calificacion (trabajoarealizar,despublic,fecha,id_usu) VALUES ($1,$2,$3,$4)',values,(err, respuesta)=>{
 					console.log(err);
 					if (err) {
 						res.send('Error');
@@ -595,6 +613,58 @@ app.post('/actualizaDatos', function (req,res) {
 					}
 				});
 				/**/
+			}
+		});
+	}else{
+		res.redirect('/i_sesion.html');
+	}
+});
+app.post('/calificaUsuario', (req,res)=>{
+	let busca = false;
+	var mail = req.session.mail;
+	var pass = req.session.pass;
+	var id = req.session.id;
+	if (req.session&&mail&&!busca) {
+		var q = 'SELECT mail, pass FROM usuario WHERE id_usu=$1 AND pass=$2';
+		var values =[id,pass];
+		client.query(q, values,(err,respuesta)=>{
+			var isUser;
+			try{
+				var resp = JSON.stringify(respuesta.rows[0]);
+			}catch(er){
+				console.log('Error: '+er);
+			}
+			if (resp.toString()==='undefined') {
+				isUser = false;
+			}else{
+				try{
+					var JSPAR = JSON.parse(resp);
+					if (err) {
+						isUser=false;
+					}
+					if (mail===JSPAR.mail&&pass===JSPAR.pass) {
+						isUser=true;
+					}else{
+						isUser=false;
+					}
+				}catch(err){
+					console.log('Error: '+err);
+					isUser=false;
+				}
+			}
+			if (!isUser) {
+				res.redirect('/i_sesion.html');
+			}else{
+				let r = req.body;
+				let values = [r.calif,r.idUsu,r.idCalifica,r.coment];
+				client.query('INSERT INTO calificacion (calif,id_usu,idcalifica,comentario) VALUES ($1,$2,$3,$4)',values,(err,resp)=>{
+					if (err==null) {
+						res.send('Calificacion enviada');
+					}else{
+						console.log(err);
+						res.send('Ocurrió un error. Intente de nuevo más tarde');
+					}
+				});
 			}
 		});
 	}else{

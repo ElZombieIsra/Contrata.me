@@ -34,7 +34,7 @@ html
             a.nav-link(href='../logout') Salir
     .d-inline-block.p-5
       div
-        img.rounded(src='../img/agua.jpg', style='width: 10vw')
+        img.rounded(src=''+img, style='width: 10vw')
         .invisible
           | Que tranza, jaja
           br
@@ -48,8 +48,6 @@ html
             -var ca = item.calif+'0'
             -var cas = 100-ca
             .row.m-2
-              .col-1
-                img.rounded(src='../img/agua.jpg', style='height: 10vh')
               .col-2.text-center.py-4
                 a(href='/visualizarContraUsuario?id='+item.idcalifica) Contactar
               .col-4.text-justify.p-2!= item.comentario

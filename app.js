@@ -4,6 +4,9 @@ const express=require('express');
 const mysql=require('mysql');
 const bcrypt=require('bcrypt-nodejs');
 var session = require('client-sessions');
+var multipart = require('connect-multiparty');
+var fs = require('fs');
+var multipartMiddleware = multipart();
 const {Client} = require('pg');
 
 const client = new Client({
@@ -78,8 +81,8 @@ app.post('/agregarUsuario',(req,res)=>{
 		return res.send('Usuario agregado');
 	});
 	*/
-	var text = 'INSERT INTO usuario(mail,pass,nombre,apellido) VALUES($1,$2,$3,$4)';
-	var values = [mail,hashed,nombre,ap];
+	var text = 'INSERT INTO usuario(mail,pass,nombre,apellido,img) VALUES($1,$2,$3,$4,$5)';
+	var values = [mail,hashed,nombre,ap,'../img/user.png'];
 	client.query(text,values,(err,respuesta)=>{
 		if (err) {
 			console.log('ERROR: ',err);
@@ -237,7 +240,8 @@ app.get('/*',(req,res)=>{
 									nombre: resp.nombre,
 									apellidos: resp.apellido,
 									id: resp.id_usu,
-									calf: []
+									img: resp.img,
+									calf: [],
 								}
 								client.query('SELECT * FROM calificacion WHERE id_usu=$1',[id],(err,resp)=>{
 									jso.calf = resp.rows;
@@ -258,7 +262,8 @@ app.get('/*',(req,res)=>{
 								mail: resp.mail,
 								direccion: resp.direccion,
 								noInt: resp.num_int,
-								id:resp.id_usu
+								id:resp.id_usu,
+								img: resp.img
 							}
 							res.render(route,jso);
 						});
@@ -411,7 +416,8 @@ app.post('/busqueda',(req, res)=>{
 								desc:resp.despublic,
 								fecha:resp.fecha,
 								idPub: resp.id_public,
-								id:resp.id_usu
+								id:resp.id_usu,
+								img:resp.img
 							}
 						}
 						res.render('busquedaTrabajadoresUsuario',jn);
@@ -663,6 +669,75 @@ app.post('/calificaUsuario', (req,res)=>{
 					}else{
 						console.log(err);
 						res.send('Ocurrió un error. Intente de nuevo más tarde');
+					}
+				});
+			}
+		});
+	}else{
+		res.redirect('/i_sesion.html');
+	}
+});
+app.post('/subeFoto',multipartMiddleware,(req,res)=>{
+	let busca = false;
+	var mail = req.session.mail;
+	var pass = req.session.pass;
+	var id = req.session.id;
+	if (req.session&&mail&&!busca) {
+		var q = 'SELECT mail, pass FROM usuario WHERE id_usu=$1 AND pass=$2';
+		var values =[id,pass];
+		client.query(q, values,(err,respuesta)=>{
+			var isUser;
+			try{
+				var resp = JSON.stringify(respuesta.rows[0]);
+			}catch(er){
+				console.log('Error: '+er);
+			}
+			if (resp.toString()==='undefined') {
+				isUser = false;
+			}else{
+				try{
+					var JSPAR = JSON.parse(resp);
+					if (err) {
+						isUser=false;
+					}
+					if (mail===JSPAR.mail&&pass===JSPAR.pass) {
+						isUser=true;
+					}else{
+						isUser=false;
+					}
+				}catch(err){
+					console.log('Error: '+err);
+					isUser=false;
+				}
+			}
+			if (!isUser) {
+				res.redirect('/i_sesion.html');
+			}else{
+				fs.readFile(req.files.imagen.path,(err,data)=>{
+					let nameImg = req.files.imagen.name;
+					console.log(data);
+					if (err) {
+						console.log('Error: '+err);
+					}else{
+						console.log('Nombre de la imagen: '+nameImg);
+						let newDir = __dirname + '/public/uploads/img/'+nameImg;
+						fs.writeFile(newDir, data, (err)=>{
+							if (err) {
+								console.log('Error: '+err);
+							}else{
+								let urlImg = '../uploads/img/'+nameImg;
+								console.log(urlImg);
+								let values = [urlImg, id];
+								client.query('UPDATE usuario SET img=$1 WHERE id_usu=$2',values,(err,resp)=>{
+									if (err) {
+										console.log('Error: '+err);
+										res.redirect('/modificaDatosUsuario');
+									}else{
+										res.redirect('/modificaDatosUsuario');
+									}
+								});
+							}
+						});
 					}
 				});
 			}

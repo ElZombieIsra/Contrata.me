@@ -34,7 +34,8 @@ html
           li.navbar-item
             a.nav-link(href='../logout') Salir
     .container-fluid.text-center.p-3
-      img.rounded(src='../img/agua.jpg', style='width: 25vw')
+      img.rounded(src=''+usu.img, style='width: 25vw')
+      p.h2!=usu.nombre+' '+usu.apellido
     .container-fluid
       .progress.mt-3(style='height: 8vh')
         -var ca = 100 - calf

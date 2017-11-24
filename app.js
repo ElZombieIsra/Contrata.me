@@ -475,7 +475,7 @@ app.post('/guardaPublicacion',(req,res)=>{
 			    let fecha = day+' del '+month+' de '+year;
 				let form = req.body;
 				let values = [form.pubType,form.desc,fecha,req.session.id];
-				client.query('INSERT INTO calificacion (trabajoarealizar,despublic,fecha,id_usu) VALUES ($1,$2,$3,$4)',values,(err, respuesta)=>{
+				client.query('INSERT INTO publicacion (trabajoarealizar,despublic,fecha,id_usu) VALUES ($1,$2,$3,$4)',values,(err, respuesta)=>{
 					console.log(err);
 					if (err) {
 						res.send('Error');

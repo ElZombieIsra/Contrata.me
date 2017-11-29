@@ -4,7 +4,7 @@
 	<title>Registro</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="height=device-height, initial-scale=1.0">
-	<script type="text/javascript" src="css/bootstrap.css"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript" src="css/bootstrap.css"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 	<link rel="icon" href="img/logo.png">
 	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
@@ -40,30 +40,35 @@
 			<h1 class="display-4">Reg&iacute;strate</h1>
 		</div>
 		<div class="container p-4 border border-dark rounded">
-			<form>
+			<form id="formulario" novalidate>
 				<div class="row">
 					<div class="col-2">Email</div>
-					<div class="col"><input class="form-control" type="email" name="mail" style="width: 100%"></div>
+					<div class="col"><input class="form-control" type="email" id="mail" style="width: 100%" required></div>
+					<div class="invalid-feedback" id="mailF">Campo inválido</div>
 				</div>
 				<div class="row" style="height: 5vh"></div>
 				<div class="row">
 					<div class="col-2">Contraseña</div>
-					<div class="col"><input class="form-control" type="password" name="pass" style="width: 100%"></div>
+					<div class="col"><input class="form-control" type="password" id="pass" style="width: 100%" required></div>
+					<div class="invalid-feedback" id="passF">Campo inválido</div>
 				</div>
 				<div class="row" style="height: 5vh"></div>
 				<div class="row">
 					<div class="col-2">Repite tu contraseña</div>
-					<div class="col"><input class="form-control" type="password" name="regis-pass2" style="width: 100%"></div>
+					<div class="col"><input class="form-control" type="password" id="regis-pass2" style="width: 100%" required></div>
+					<div class="invalid-feedback" id="passF2">Campo inválido</div>
 				</div>
 				<div class="row" style="height: 5vh"></div>
 				<div class="row">
 					<div class="col-2">Nombre</div>
-					<div class="col"><input class="form-control" type="text" name="nombre" style="width: 100%"></div>
+					<div class="col"><input class="form-control" type="text" id="nombre" style="width: 100%" required></div>
+					<div class="invalid-feedback" id="nombreF">Campo inválido</div>
 				</div>
 				<div class="row" style="height: 5vh"></div>
 				<div class="row">
 					<div class="col-2">Apellidos</div>
-					<div class="col"><input class="form-control" type="text" name="apellidos" style="width: 100%"></div>
+					<div class="col"><input class="form-control" type="text" id="apellidos" style="width: 100%" required></div>
+					<div class="invalid-feedback">Campo inválido</div>
 				</div>
 				<div class="row" style="height: 5vh"></div>
 				<div class="row">
@@ -80,33 +85,99 @@
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$('#registroEnviar').on('click',function(){
-				var formData={
-					'mail': $('input[name=mail]').val(),
-					'pass': $('input[name=pass]').val(),
-					'nombre':$('input[name=nombre]').val(),
-					'apellidos':$('input[name=apellidos]').val()
-				};
-				$.ajax({
-					url:'/agregarUsuario',
-					type:'POST',
-					cache:false,
-					data: formData,
-					success: function(data){
-						$('#snackbar').addClass("show").html("<strong>Usuario creado</strong>");
-						setTimeout(function(){
-							$('#snackbar').removeClass("show");
-						},3000);
-					},
-					error: function(jqXHR,textStatus,err){
-						$('#snackbar').addClass("show").html("<strong>Error. Intente de nuevo más tarde. <br> Si el problema persiste, contacte a un administrador</strong>");
-						setTimeout(function(){
-							$('#snackbar').removeClass("show");
-						},3000);
+				if (formulario.mail.value.length < 2) {
+					alert("Escriba el correo de la forma xx.@xx.xx");
+					$('#formulario').addClass('was-validated');
+					formulario.mail.focus();
+					return (false);
+				}
+				var txt = formulario.mail.value;
+				var b= /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9])+$/;
+				if(!b.test(txt)){			
+    			alert("Email no válido.")
+					$('#formulario').addClass('was-validated');  
+					return (false);
+    			}
+				if (formulario.nombre.value.length < 5) {
+					alert("Escriba por lo menos 5 caracteres en el campo Nombre.");
+					$('#formulario').addClass('was-validated');
+					formulario.nombre.focus();
+					return (false);
+				}
+				var checkOK = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZÁÉÍÓÚ" + "abcdefghijklmnñopqrstuvwxyzáéíóú ";
+				var checkStr = formulario.nombre.value;
+				var allValid = true;
+				for (i = 0; i < checkStr.length; i++) {
+					ch = checkStr.charAt(i);
+					for (j = 0; j < checkOK.length; j++)
+						if (ch == checkOK.charAt(j))
+						break;
+					if (j == checkOK.length) {
+						allValid = false;
+						break;
 					}
-				});
-			});
+				}
+				if (!allValid) {
+					alert("Escriba sólo letras en el campo Nombre.");
+					$('#formulario').addClass('was-validated');
+					formulario.nombre.focus();
+					return (false);
+				}
+				if (formulario.apellidos.value.length < 5) {
+					alert("Escriba por lo menos 5 caracteres en el campo Apellido.");
+					$('#formulario').addClass('was-validated');
+					formulario.apellidos.focus();
+					return (false);
+				}
+				var checkOK = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZÁÉÍÓÚ" + "abcdefghijklmnñopqrstuvwxyzáéíóú ";
+				var checkStr = formulario.apellidos.value;
+				var allValid = true;
+				for (i = 0; i < checkStr.length; i++) {
+					ch = checkStr.charAt(i);
+					for (j = 0; j < checkOK.length; j++)
+						if (ch == checkOK.charAt(j))
+							break;
 
+							if (j == checkOK.length) {
+								allValid = false;
+									break;
+							}
+				}
+				if (!allValid) {
+					alert("Escriba sólo letras en el campo Apellido.");
+					$('#formulario').addClass('was-validated');
+					formulario.apellidos.focus();
+					return (false);
+				}
+				validado();
+			});	
 		});
+		function validado() {
+			var formData={
+				'mail': $('input[name=mail]').val(),
+				'pass': $('input[name=pass]').val(),
+				'nombre':$('input[name=nombre]').val(),
+				'apellidos':$('input[name=apellidos]').val()
+			};
+			$.ajax({
+				url:'/agregarUsuario',
+				type:'POST',
+				cache:false,
+				data: formData,
+				success: function(data){
+					$('#snackbar').addClass("show").html("<strong>Usuario creado</strong>");
+					setTimeout(function(){
+						$('#snackbar').removeClass("show");
+					},3000);
+				},
+				error: function(jqXHR,textStatus,err){
+					$('#snackbar').addClass("show").html("<strong>Error. Intente de nuevo más tarde. <br> Si el problema persiste, contacte a un administrador</strong>");
+					setTimeout(function(){
+						$('#snackbar').removeClass("show");
+					},3000);
+				}
+			});
+		}
 	</script>
 </body>
 </html>

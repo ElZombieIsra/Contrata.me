@@ -30,8 +30,6 @@ const client = new Client({
 	port: 5432,
 });
 */
-
-client.connect();
 /*
 var con=mysql.createConnection({
 	host:'localhost',
@@ -42,6 +40,7 @@ var con=mysql.createConnection({
 
 con.connect();
 */
+client.connect();
 var app=express();
 app.set('view engine','pug');
 var bodyParser=require('body-parser');
@@ -130,28 +129,6 @@ app.post('/consultarUsuario',(req,res)=>{
 			}
 		}
 	});
-	/*
-	con.query('SELECT mail, pass FROM usuario WHERE mail="'+mail+'" AND pass="'+pass+'"',(err,respuesta,fields)=>{
-		var resp = JSON.stringify(respuesta);
-		if (resp=='[]') {
-			console.log('Error. No existe el usuario');
-			return res.send('No existe el usuario');
-		}else{
-			var json = JSON.parse(resp);
-			if (err) {
-				console.log('Error: ',err);
-				return;
-			}
-			if (mail===json[0].mail&&pass===json[0].pass) {
-				req.session.mail=mail;
-				req.session.pass=pass;
-				return res.send('Sí existe el usuario');
-			}else{
-				return;
-			}
-		}
-	});
-	*/
 });
 app.get('/*',(req,res)=>{
 	let busca = false;

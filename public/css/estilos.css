@@ -24,6 +24,7 @@ body {
 }
 
 #indexInvitado input[type=text], input[type=password], input[type=email] {
+    height:60%;
     background-color: #598392;
     color: white;
     -webkit-transition: 0.5s;
@@ -40,8 +41,12 @@ body {
     border: 2px;
     border-radius: 15px;
     color: white;
-
 }
+
+#barraNavegacion{
+    width: 100%;
+}
+
 
 #jumbo{
 	background-color: #01161E;

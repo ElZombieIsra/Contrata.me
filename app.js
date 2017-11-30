@@ -83,6 +83,8 @@ app.post('/agregarUsuario',(req,res)=>{
 	var text = 'INSERT INTO usuario(mail,pass,nombre,apellido,img) VALUES($1,$2,$3,$4,$5)';
 	var values = [mail,hashed,nombre,ap,'../img/user.png'];
 	client.query(text,values,(err,respuesta)=>{
+		console.log(respuesta);
+		console.log(err);
 		if (err) {
 			console.log('ERROR: ',err);
 			return;
@@ -93,9 +95,10 @@ app.post('/agregarUsuario',(req,res)=>{
 app.post('/consultarUsuario',(req,res)=>{
 	let mail=req.body.mail;
 	let pass=req.body.pass;
-	var q = 'SELECT id_usu,mail, pass FROM usuario WHERE mail=$1';
+	var q = 'SELECT id_usu, mail, pass FROM usuario WHERE mail=$1';
 	var values =[mail];
 	client.query(q, values,(err,respuesta)=>{
+		console.log(respuesta);
 		if (err) {
 			console.log('Error: ',err);
 			return res.send('Error. Intente de nuevo más tarde');

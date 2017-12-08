@@ -66,11 +66,10 @@ app.listen(app.get('port'),()=>{
 });
 
 app.post('/agregarUsuario',(req,res)=>{
-	let nombre=req.body.nombre;
-	let mail=req.body.mail;
+	let nombre=String(req.body.nombre).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');;
+	let mail= String(req.body.mail).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 	let hashed = bcrypt.hashSync(req.body.pass);
-	let pass=req.body.pass;
-	let ap=req.body.apellidos;
+	let ap=String(req.body.apellidos).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 	/*
 	con.query('insert into usuario values(1,"'+mail+'","'+pass+'","'+nombre+'","'+ap+'")',(err,respuesta,fields)=>{
 		if (err) {
@@ -83,8 +82,6 @@ app.post('/agregarUsuario',(req,res)=>{
 	var text = 'INSERT INTO usuario(mail,pass,nombre,apellido,img) VALUES($1,$2,$3,$4,$5)';
 	var values = [mail,hashed,nombre,ap,'../img/user.png'];
 	client.query(text,values,(err,respuesta)=>{
-		console.log(respuesta);
-		console.log(err);
 		if (err) {
 			console.log('ERROR: ',err);
 			return;
@@ -93,12 +90,11 @@ app.post('/agregarUsuario',(req,res)=>{
 	});
 });
 app.post('/consultarUsuario',(req,res)=>{
-	let mail=req.body.mail;
+	let mail=String(req.body.mail).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 	let pass=req.body.pass;
 	var q = 'SELECT id_usu, mail, pass FROM usuario WHERE mail=$1';
 	var values =[mail];
 	client.query(q, values,(err,respuesta)=>{
-		console.log(respuesta);
 		if (err) {
 			console.log('Error: ',err);
 			return res.send('Error. Intente de nuevo más tarde');
@@ -229,7 +225,6 @@ app.get('/*',(req,res)=>{
 								});
 							});
 						}catch(err){
-							console.log(err);
 							res.redirect('/perfilUsuario');
 						}
 
@@ -454,7 +449,9 @@ app.post('/guardaPublicacion',(req,res)=>{
 			    day = (day < 10 ? "0" : "") + day;
 			    let fecha = day+' del '+month+' de '+year;
 				let form = req.body;
-				let values = [form.pubType,form.desc,fecha,req.session.id];
+				let formType = String(form.pubType).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+				let formDesc = String(form.desc).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+				let values = [formType,formDesc, fecha,req.session.id];
 				client.query('INSERT INTO publicacion (trabajoarealizar,despublic,fecha,id_usu) VALUES ($1,$2,$3,$4)',values,(err, respuesta)=>{
 					console.log(err);
 					if (err) {
@@ -506,12 +503,12 @@ app.post('/actualizaDatos', function (req,res) {
 				setTimeout(res.redirect('../i_sesion'),3000);
 			}else{
 				let d = req.body;
-				let mai=d.mail.toString();
+				let mai= String(d.mail).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 				let pas=d.pass.toString();
-				let name=d.nombre.toString();
-				let last=d.apellido.toString();
-				let address=d.direccion.toString();
-				let noInt=d.noInt.toString();
+				let name=String(d.nombre).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+				let last=String(d.apellido).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+				let address=String(d.direccion).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+				let noInt=String(d.noInt).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 				let ma=false;
 				let pa=false;
 				let na=false;
@@ -642,7 +639,12 @@ app.post('/calificaUsuario', (req,res)=>{
 				res.redirect('/i_sesion.html');
 			}else{
 				let r = req.body;
-				let values = [r.calif,r.idUsu,r.idCalifica,r.coment];
+				let values = [
+					r.calif,
+					r.idUsu,
+					String(r.idCalifica).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
+					String(r.coment).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+				];
 				client.query('INSERT INTO calificacion (calif,id_usu,idcalifica,comentario) VALUES ($1,$2,$3,$4)',values,(err,resp)=>{
 					if (err==null) {
 						res.send('Calificacion enviada');
@@ -695,7 +697,6 @@ app.post('/subeFoto',multipartMiddleware,(req,res)=>{
 			}else{
 				fs.readFile(req.files.imagen.path,(err,data)=>{
 					let nameImg = req.files.imagen.name;
-					console.log(data);
 					if (err) {
 						console.log('Error: '+err);
 					}else{
